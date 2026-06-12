@@ -1,0 +1,16 @@
+# --- Maven Build Outputs ---
+target/
+*.jar
+*.war
+*.ear
+
+# --- VS Code Workspace Configuration ---
+.vscode/
+.project
+.classpath
+.factorypath
+
+# --- Local Operating System Junk ---
+Thumbs.db
+.DS_Store
+*.log
