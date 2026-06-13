@@ -13,11 +13,16 @@ public class GamePanel extends JPanel implements Runnable {
 	private final double DRAW_INTERVAL = 1000000000.0 / FPS;
 
     private Thread gameThread;
+	private KeyHandler keyH = new KeyHandler();
+	private UI ui = new UI();
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT));
 		this.setDoubleBuffered(true); // Basically improves performance
 		this.setBackground(Color.BLACK);
+
+		// Add KeyHandler
+		this.addKeyListener(keyH);
 		this.setFocusable(true);
 	}
 
@@ -61,6 +66,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void update() {
     	// TODO: Implement update stuff
+		System.out.println(keyH);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -68,6 +74,8 @@ public class GamePanel extends JPanel implements Runnable {
 		Graphics2D g2 = (Graphics2D)g;
 
 		// TODO: Implement drawing stuff
+		ui.setGraphics(g2);
+		ui.drawBox(ui.getXForCenteredBox(100), ui.getYForCenteredBox(100), 100, 100, false, false);
 
 		g.dispose(); // Clear up graphics resources efficiently
     }
