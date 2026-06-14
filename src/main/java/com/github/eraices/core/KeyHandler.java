@@ -4,15 +4,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-
+    public static final int NUM_CONTROLS = 10;
     public static final int UP = 0;
     public static final int DOWN = 1;
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
-
-    private static final int NUM_CONTROLS = 10;
     
+    private GamePanel gp;
     private boolean[] pressed = new boolean[NUM_CONTROLS];
+
+    public KeyHandler(GamePanel gp) {
+        this.gp = gp;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -23,6 +26,7 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
+        // Press key
         switch(code) {
             case Key.W -> press(UP);
             case Key.A -> press(LEFT);
@@ -30,11 +34,15 @@ public class KeyHandler implements KeyListener {
             case Key.D -> press(RIGHT);
             default -> {} // Do nothing
         }
+
+        // Handle input in the proper game state
+        gp.gsm.getCurrentGameState().handleInput(e.getKeyCode());
     }
 
     @Override public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
 
+        // Release key
         switch(code) {
             case Key.W -> release(UP);
             case Key.A -> release(LEFT);
@@ -42,6 +50,9 @@ public class KeyHandler implements KeyListener {
             case Key.D -> release(RIGHT);
             default -> {} // Do nothing
         }
+
+        // Handle input in the proper game state
+        gp.gsm.getCurrentGameState().handleInput(e.getKeyCode());
     }
 
     public boolean isPressed(int key) {

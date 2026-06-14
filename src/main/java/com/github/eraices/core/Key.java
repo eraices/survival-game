@@ -3,7 +3,6 @@ package com.github.eraices.core;
 import java.awt.event.KeyEvent;
 
 public final class Key {
-
     // These constants are just easier to type
     public static final int W = KeyEvent.VK_W;
     public static final int A = KeyEvent.VK_A;

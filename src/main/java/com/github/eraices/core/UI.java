@@ -3,14 +3,31 @@ package com.github.eraices.core;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.github.eraices.entities.Player;
 
 public class UI {
+    private static final float DEFAULT_FONT_SIZE = 20f;
 
+    private GamePanel gp;
     private Graphics2D g2;
+    private Font font;
 
-    public UI() {
-        // Constructor can initialize fonts or UI state variables later
+    public UI(GamePanel gp) {
+        this.gp = gp;
+
+        // Set the font
+        try {
+			InputStream is = getClass().getResourceAsStream("/fonts/PokemonGb-RAeo.ttf");
+			font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(DEFAULT_FONT_SIZE);
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+            font = new Font("Arial", Font.PLAIN, (int)DEFAULT_FONT_SIZE); // Fallback font
+		}
     }
 
     public void drawBox(int x, int y, int width, int height, boolean chosen, boolean selected) {
@@ -37,6 +54,23 @@ public class UI {
 
         g2.fillRoundRect(x, y, width, height, 35, 35);
         g2.setColor(Color.black);
+    }
+
+    public void drawPlayerCoords() {
+        int tileSize = gp.getTileSize();
+
+        int xCoord = gp.player.getXCoord();
+        int yCoord = gp.player.getYCoord();
+
+        String text = "(X: " + xCoord + ", Y: " + yCoord + ")";
+        int textX = tileSize / 4;
+        int textY = tileSize / 4 + this.getTextHeight(text);
+
+        g2.drawString(text, textX, textY);
+    }
+
+    public void drawString(String text, int textX, int textY) {
+        g2.drawString(text, textX, textY);
     }
 
     public int getXForCenteredBox(int boxWidth) {
@@ -84,8 +118,12 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, size));
 	}
 
-    // Allows GamePanel to hand over the active graphics before drawing
     public void setGraphics(Graphics2D g2) {
         this.g2 = g2;
+        g2.setFont(font);
+    }
+
+    private int getTextHeight(String text) {
+        return (int)g2.getFontMetrics().getAscent();
     }
 }

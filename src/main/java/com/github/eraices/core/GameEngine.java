@@ -3,11 +3,11 @@ package com.github.eraices.core;
 import javax.swing.JFrame;
 
 public class GameEngine {
-
 	// The game will calculate based on these dimensions,
 	// regardless of the actual window dimensions
 	public static final int VIRTUAL_SCREEN_WIDTH = 800;
 	public static final int VIRTUAL_SCREEN_HEIGHT = 600;
+	public static final int TILE_SIZE = 16;
 
 	private JFrame window;
 
@@ -28,7 +28,7 @@ public class GameEngine {
 		window.setTitle("Survival Game");
 		window.setResizable(true);
 
-		GamePanel gamePanel = new GamePanel();
+		GamePanel gamePanel = new GamePanel(TILE_SIZE);
 		window.add(gamePanel);
 		window.pack();
 

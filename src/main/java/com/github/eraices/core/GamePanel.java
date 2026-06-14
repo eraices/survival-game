@@ -7,16 +7,25 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import com.github.eraices.core.GameStateManager.State;
+import com.github.eraices.entities.Player;
+
 public class GamePanel extends JPanel implements Runnable {
-    
 	private final int FPS = 60;
 	private final double DRAW_INTERVAL = 1000000000.0 / FPS;
+	
+	public GameStateManager gsm = new GameStateManager(this);
+	public KeyHandler keyH = new KeyHandler(this);
+	public Player player = new Player(0, 0, 5, this);
+	public UI ui = new UI(this);
 
     private Thread gameThread;
-	private KeyHandler keyH = new KeyHandler();
-	private UI ui = new UI();
+	private int tileSize = 16;
 	
-	public GamePanel() {
+	public GamePanel(int tileSize) {
+		this.tileSize = tileSize;
+
+		// Set panel settings
 		this.setPreferredSize(new Dimension(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT));
 		this.setDoubleBuffered(true); // Basically improves performance
 		this.setBackground(Color.BLACK);
@@ -24,6 +33,9 @@ public class GamePanel extends JPanel implements Runnable {
 		// Add KeyHandler
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+
+		// Set starting game state
+		gsm.setCurrGameState(State.PLAY);
 	}
 
 	public void startGameThread() {
@@ -42,11 +54,13 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// This loop will keep running as long as this thread exists
 		while(gameThread != null) {
+			// Calculate time between last loop and this one
 			currentTime = System.nanoTime();
 			delta += (currentTime - lastTime) / DRAW_INTERVAL;
 			timer += (currentTime - lastTime);
 			lastTime = currentTime;
 			
+			// New frame every draw interval
 			if(delta >= 1) {
 				update();
 				repaint();
@@ -55,6 +69,7 @@ public class GamePanel extends JPanel implements Runnable {
 				drawCount++;
 			}
 			
+			// Print FPS to console every second
 			if(timer >= 1000000000) {
 				System.out.println("FPS (" + frameNum + "): " + drawCount);
 				drawCount = 0;
@@ -66,17 +81,43 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void update() {
     	// TODO: Implement update stuff
-		System.out.println(keyH);
+		//System.out.println(keyH);
+		gsm.getCurrentGameState().update();
+
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
+		ui.setGraphics(g2);
 
 		// TODO: Implement drawing stuff
-		ui.setGraphics(g2);
-		ui.drawBox(ui.getXForCenteredBox(100), ui.getYForCenteredBox(100), 100, 100, false, false);
+		//testUI(g2);
+		gsm.getCurrentGameState().draw(g2);
 
 		g.dispose(); // Clear up graphics resources efficiently
     }
+
+	public int getTileSize() {
+		return tileSize;
+	}
+
+	private void testUI(Graphics2D g2) {
+		ui.setGraphics(g2);
+
+		// Calculate box dimensions and coordinates
+		int boxWidth = 400;
+		int boxHeight = 300;
+		int boxX = ui.getXForCenteredBox(boxWidth);
+		int boxY = ui.getYForCenteredBox(boxHeight);
+
+		// Calculate text coordinates
+		String text = "Sample text";
+		int textX = ui.getXForCenteredTextInBox(text, boxX, boxWidth);
+		int textY = ui.getYForCenteredTextInBox(text, boxY, boxHeight);
+
+		// Draw box, then text
+		ui.drawBox(boxX, boxY, boxWidth, boxHeight, false, false);
+		ui.drawString(text, textX, textY);
+	}
 }
