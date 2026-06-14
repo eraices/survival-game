@@ -55,14 +55,12 @@ public class UI {
     }
 
     public void drawPlayerCoords() {
-        int tileSize = gp.getTileSize();
-
         int xCoord = gp.player.getXCoord();
         int yCoord = gp.player.getYCoord();
 
         String text = "(X: " + xCoord + ", Y: " + yCoord + ")";
-        int textX = tileSize / 4;
-        int textY = tileSize / 4 + this.getTextHeight(text);
+        int textX = gp.tileSize / 4;
+        int textY = gp.tileSize / 4 + this.getTextHeight(text);
 
         g2.drawString(text, textX, textY);
     }

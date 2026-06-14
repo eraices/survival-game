@@ -14,6 +14,8 @@ public class Entity {
     protected int worldX = 0;
     protected int worldY = 0;
     protected int speed = 2;
+    protected int width;
+    protected int height;
     protected boolean isMoving = false;
 
     public Entity(int worldX, int worldY, int speed, GamePanel gp) {
@@ -24,11 +26,11 @@ public class Entity {
     }
 
     public int getXCoord() {
-        return worldX / gp.getTileSize();
+        return worldX / gp.tileSize;
     }
 
     public int getYCoord() {
-        return worldY / gp.getTileSize();
+        return worldY / gp.tileSize;
     }
 
     public void setDirection(Direction direction) {

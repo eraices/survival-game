@@ -18,13 +18,14 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	public Player player = new Player(0, 0, 5, this);
 	public UI ui = new UI(this);
+	public int ogTileSize = 16;
+	public int scale = 3;
+	public int tileSize = ogTileSize * scale;
+
 
     private Thread gameThread;
-	private int tileSize = 16;
-	private int scale = 3;
 	
-	public GamePanel(int tileSize) {
-		this.tileSize = tileSize;
+	public GamePanel() {
 
 		// Set panel settings
 		this.setPreferredSize(new Dimension(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT));
@@ -94,8 +95,4 @@ public class GamePanel extends JPanel implements Runnable {
 
 		g.dispose(); // Clear up graphics resources efficiently
     }
-
-	public int getTileSize() {
-		return tileSize * scale;
-	}
 }

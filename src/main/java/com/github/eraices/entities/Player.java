@@ -9,6 +9,8 @@ import com.github.eraices.core.GamePanel;
 public class Player extends Entity {
     public Player(int worldX, int worldY, int speed, GamePanel gp) {
         super(worldX, worldY, speed, gp);
+        this.width = gp.tileSize;
+        this.height = gp.tileSize;
     }
 
     @Override
@@ -20,7 +22,7 @@ public class Player extends Entity {
 
     @Override
     public void draw(Graphics2D g2) {
-        int tileSize = gp.getTileSize();
+        int tileSize = gp.tileSize;
 
         // Player is always at center screen
         int screenX = (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (tileSize / 2);
