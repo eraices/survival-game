@@ -21,6 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Thread gameThread;
 	private int tileSize = 16;
+	private int scale = 3;
 	
 	public GamePanel(int tileSize) {
 		this.tileSize = tileSize;
@@ -80,8 +81,6 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void update() {
-    	// TODO: Implement update stuff
-		//System.out.println(keyH);
 		gsm.getCurrentGameState().update();
 
 	}
@@ -91,33 +90,12 @@ public class GamePanel extends JPanel implements Runnable {
 		Graphics2D g2 = (Graphics2D)g;
 		ui.setGraphics(g2);
 
-		// TODO: Implement drawing stuff
-		//testUI(g2);
 		gsm.getCurrentGameState().draw(g2);
 
 		g.dispose(); // Clear up graphics resources efficiently
     }
 
 	public int getTileSize() {
-		return tileSize;
-	}
-
-	private void testUI(Graphics2D g2) {
-		ui.setGraphics(g2);
-
-		// Calculate box dimensions and coordinates
-		int boxWidth = 400;
-		int boxHeight = 300;
-		int boxX = ui.getXForCenteredBox(boxWidth);
-		int boxY = ui.getYForCenteredBox(boxHeight);
-
-		// Calculate text coordinates
-		String text = "Sample text";
-		int textX = ui.getXForCenteredTextInBox(text, boxX, boxWidth);
-		int textY = ui.getYForCenteredTextInBox(text, boxY, boxHeight);
-
-		// Draw box, then text
-		ui.drawBox(boxX, boxY, boxWidth, boxHeight, false, false);
-		ui.drawString(text, textX, textY);
+		return tileSize * scale;
 	}
 }

@@ -20,15 +20,13 @@ public class Player extends Entity {
 
     @Override
     public void draw(Graphics2D g2) {
-        // Player is always at center screen
-        //int screenX = (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - 24;
-        //int screenY = (GameEngine.VIRTUAL_SCREEN_HEIGHT / 2) - 24;
+        int tileSize = gp.getTileSize();
 
-        // This is just to test. If player movement works, this shouldn't be here anymore
-        int screenX = worldX;
-        int screenY = worldY;
+        // Player is always at center screen
+        int screenX = (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (tileSize / 2);
+        int screenY = (GameEngine.VIRTUAL_SCREEN_HEIGHT / 2) - (tileSize / 2);
 
         g2.setColor(Color.WHITE);
-        g2.fillOval(screenX, screenY, 48, 48);
+        g2.fillOval(screenX, screenY, tileSize, tileSize);
     }
 }

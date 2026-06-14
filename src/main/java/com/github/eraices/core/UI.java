@@ -8,8 +8,6 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.github.eraices.entities.Player;
-
 public class UI {
     private static final float DEFAULT_FONT_SIZE = 20f;
 
