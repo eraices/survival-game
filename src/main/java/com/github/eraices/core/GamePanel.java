@@ -14,13 +14,13 @@ public class GamePanel extends JPanel implements Runnable {
 	private final int FPS = 60;
 	private final double DRAW_INTERVAL = 1000000000.0 / FPS;
 	
-	public GameStateManager gsm = new GameStateManager(this);
-	public KeyHandler keyH = new KeyHandler(this);
-	public Player player = new Player(0, 0, 5, this);
-	public UI ui = new UI(this);
 	public int ogTileSize = 16;
 	public int scale = 3;
 	public int tileSize = ogTileSize * scale;
+	public GameStateManager gsm = new GameStateManager(this);
+	public KeyHandler keyH = new KeyHandler(this);
+	public UI ui = new UI(this);
+	public Player player = new Player(this, 0, 0, 5);
 
 
     private Thread gameThread;
@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// Set panel settings
 		this.setPreferredSize(new Dimension(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT));
 		this.setDoubleBuffered(true); // Basically improves performance
-		this.setBackground(Color.BLACK);
+		this.setBackground(Color.CYAN);
 
 		// Add KeyHandler
 		this.addKeyListener(keyH);

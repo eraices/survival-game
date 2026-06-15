@@ -41,29 +41,45 @@ public class PlayState implements GameState {
             && !leftPressed && !rightPressed) {         // No Movement
             gp.player.setIsMoving(false);
         } else if(upPressed && leftPressed) {           // UP_LEFT movement
-            gp.player.setDirection(Direction.UP_LEFT);
+            if(!gp.player.isFacing(Direction.LEFT)) {
+                gp.player.setDirection(Direction.UP);
+            }
+            gp.player.setMovingDirection(Direction.UP_LEFT);
             gp.player.setIsMoving(true);
         } else if(upPressed && rightPressed) {          // UP_RIGHT movement
-            gp.player.setDirection(Direction.UP_RIGHT);
+            if(!gp.player.isFacing(Direction.RIGHT)) {
+                gp.player.setDirection(Direction.UP);
+            }
+            gp.player.setMovingDirection(Direction.UP_RIGHT);
             gp.player.setIsMoving(true);
         } else if(downPressed && leftPressed) {         // DOWN_LEFT movement
-            gp.player.setDirection(Direction.DOWN_LEFT);
+            if(!gp.player.isFacing(Direction.LEFT)) {
+                gp.player.setDirection(Direction.DOWN);
+            }
+            gp.player.setMovingDirection(Direction.DOWN_LEFT);
             gp.player.setIsMoving(true);
-        } else if(downPressed && rightPressed) {           // DOWN_RIGHT movement
-            gp.player.setDirection(Direction.DOWN_RIGHT);
+        } else if(downPressed && rightPressed) {        // DOWN_RIGHT movement
+            if(!gp.player.isFacing(Direction.RIGHT)) {
+                gp.player.setDirection(Direction.DOWN);
+            }
+            gp.player.setMovingDirection(Direction.DOWN_RIGHT);
             gp.player.setIsMoving(true);
         }
         else if(upPressed) {                            // UP movement
             gp.player.setDirection(Direction.UP);
+            gp.player.setMovingDirection(Direction.UP);
             gp.player.setIsMoving(true);
         } else if(downPressed) {                        // DOWN movement
             gp.player.setDirection(Direction.DOWN);
+            gp.player.setMovingDirection(Direction.DOWN);
             gp.player.setIsMoving(true);
         } else if(leftPressed) {                        // LEFT movement
             gp.player.setDirection(Direction.LEFT);
+            gp.player.setMovingDirection(Direction.LEFT);
             gp.player.setIsMoving(true);
         } else if(rightPressed) {                       // RIGHT movement
             gp.player.setDirection(Direction.RIGHT);
+            gp.player.setMovingDirection(Direction.RIGHT);
             gp.player.setIsMoving(true);
         }
     }

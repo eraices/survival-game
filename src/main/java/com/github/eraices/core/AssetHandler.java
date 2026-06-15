@@ -2,6 +2,7 @@ package com.github.eraices.core;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class AssetHandler {
         try {
             BufferedImage spriteSheet = ImageIO.read
              (Objects.requireNonNull(AssetHandler.class.getResource("/sprites/" + fileName + ".png")));
-
+             
             for(int row = 0; row < rows; row++) {
                 for(int col = 0; col < cols; col++) {
                     BufferedImage sprite = spriteSheet.getSubimage
@@ -25,7 +26,7 @@ public class AssetHandler {
                     sprites[row][col] = scaleImage(sprite, scaledWidth, scaledHeight);
                 }
             }
-        } catch (IOException | NullPointerException e) {
+        } catch(IOException | NullPointerException e) {
             System.err.println("Error loading sprite sheet " + fileName + ".png");
             e.printStackTrace();
         }

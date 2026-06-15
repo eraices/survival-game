@@ -1,7 +1,9 @@
 package com.github.eraices.entities;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
+import com.github.eraices.core.AssetHandler;
 import com.github.eraices.core.GamePanel;
 
 public class Entity {
@@ -10,19 +12,25 @@ public class Entity {
     }
     
     protected Direction direction = Direction.DOWN;
+    protected Direction movingDirection = Direction.DOWN;
     protected GamePanel gp;
-    protected int worldX = 0;
-    protected int worldY = 0;
-    protected int speed = 2;
+    protected BufferedImage[][] spriteSheet;
+    protected BufferedImage sprite;
+    protected int spriteNum;
+    protected int spriteCounter = 0;
+    protected int frameLength;
+    protected int worldX;
+    protected int worldY;
+    protected int speed;
     protected int width;
     protected int height;
     protected boolean isMoving = false;
 
-    public Entity(int worldX, int worldY, int speed, GamePanel gp) {
+    public Entity(GamePanel gp, int worldX, int worldY, int speed) {
+        this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
         this.speed = speed;
-        this.gp = gp;
     }
 
     public int getXCoord() {
@@ -37,6 +45,10 @@ public class Entity {
         this.direction = direction;
     }
 
+    public void setMovingDirection(Direction movingDirection) {
+        this.movingDirection = movingDirection;
+    }
+
     public boolean isFacing(Direction direction) {
         return (this.direction == direction);
     }
@@ -47,7 +59,29 @@ public class Entity {
 
     public void setIsMoving(boolean isMoving) {
         this.isMoving = isMoving;
+        
+        if(!isMoving) {
+            spriteNum = 0;
+            spriteCounter = 0;
+        }
+
+        setSprite();
     }
+
+    public void setSprite() {
+        int row = direction.ordinal();
+		sprite = spriteSheet[row][spriteNum];
+	}
+
+    public void setSpriteSheet(String fileName, int frameWidth, int frameHeight, int rows, int cols) {
+        int scaledWidth = frameWidth * gp.scale;
+        int scaledHeight = frameHeight * gp.scale;
+
+        spriteSheet = AssetHandler.loadSpriteSheet
+                       (fileName, frameWidth, frameHeight, rows, cols, scaledWidth, scaledHeight);
+
+        setSprite();
+     }
 
     public void update() {
         // TODO: Implement this
@@ -57,8 +91,27 @@ public class Entity {
         // TODO: Implement draw logic for non-player entities
     }
 
+	public void changeFrame() {
+		if(spriteNum < (spriteSheet[0].length - 1)) {
+			spriteNum++;
+		} else {
+			spriteNum = 0;
+		}
+		
+		setSprite();
+	}
+
+    public void checkSprite() {
+		if(spriteCounter < frameLength) {
+			spriteCounter++;
+		} else {
+			spriteCounter = 0;
+			changeFrame();
+		}
+	}
+
     public void move() {
-        switch(direction) {
+        switch(movingDirection) {
             case UP -> worldY -= speed;
             case DOWN -> worldY += speed;
             case LEFT -> worldX -= speed;
@@ -80,5 +133,7 @@ public class Entity {
                 worldX += speed;
             }
         }
+
+        checkSprite();
     }
 }
