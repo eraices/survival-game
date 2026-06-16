@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import com.github.eraices.core.GameStateManager.State;
 import com.github.eraices.entities.Player;
+import com.github.eraices.world.WorldManager;
 
 public class GamePanel extends JPanel implements Runnable {
 	private final int FPS = 60;
@@ -21,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
 	public Player player = new Player(this, 0, 0, 5);
+	public WorldManager world = new WorldManager(this);
 
 
     private Thread gameThread;

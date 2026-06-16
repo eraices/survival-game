@@ -25,6 +25,7 @@ public class PlayState implements GameState {
 
     @Override
     public void draw(Graphics2D g2) {
+        gp.world.draw(g2);
         gp.player.draw(g2);
         gp.ui.drawPlayerCoords();
     }

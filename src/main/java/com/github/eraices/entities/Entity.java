@@ -33,6 +33,14 @@ public class Entity {
         this.speed = speed;
     }
 
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
     public int getXCoord() {
         return worldX / gp.tileSize;
     }

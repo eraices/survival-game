@@ -12,13 +12,13 @@ public class AssetHandler {
 
     // Loads a sprite sheet, slices it into frames, then scales each frame
     public static BufferedImage[][] loadSpriteSheet
-     (String fileName, int frameWidth, int frameHeight, int rows, int cols, int scaledWidth, int scaledHeight) {
+     (String filepath, int frameWidth, int frameHeight, int rows, int cols, int scaledWidth, int scaledHeight) {
         BufferedImage[][] sprites = new BufferedImage[rows][cols];
 
         try {
             BufferedImage spriteSheet = ImageIO.read
-             (Objects.requireNonNull(AssetHandler.class.getResource("/sprites/" + fileName + ".png")));
-             
+             (Objects.requireNonNull(AssetHandler.class.getResource(filepath + ".png")));
+
             for(int row = 0; row < rows; row++) {
                 for(int col = 0; col < cols; col++) {
                     BufferedImage sprite = spriteSheet.getSubimage
@@ -27,7 +27,7 @@ public class AssetHandler {
                 }
             }
         } catch(IOException | NullPointerException e) {
-            System.err.println("Error loading sprite sheet " + fileName + ".png");
+            System.err.println("Error loading sprite sheet " + filepath + ".png");
             e.printStackTrace();
         }
 

@@ -12,7 +12,15 @@ public class Player extends Entity {
         width = gp.tileSize;
         height = gp.tileSize;
         frameLength = 6;
-        setSpriteSheet("Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
+        setSpriteSheet("/sprites/Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
+    }
+
+    public int getScreenX() {
+        return (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (gp.tileSize / 2);
+    }
+
+    public int getScreenY() {
+        return (GameEngine.VIRTUAL_SCREEN_HEIGHT / 2) - (gp.tileSize / 2);
     }
 
     @Override
