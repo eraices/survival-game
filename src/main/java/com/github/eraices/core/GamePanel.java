@@ -4,8 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.github.eraices.core.GameStateManager.State;
 import com.github.eraices.entities.Player;
@@ -26,6 +31,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     private Thread gameThread;
+
+	// Fullscreen variables
+	private boolean isFullscreen = false;
+	private int fullscreenWidth;
+	private int fullscreenHeight;
+	private BufferedImage virtualCanvas;
+	private Graphics2D g2Virtual;
 	
 	public GamePanel() {
 
@@ -97,4 +109,34 @@ public class GamePanel extends JPanel implements Runnable {
 
 		g.dispose(); // Clear up graphics resources efficiently
     }
+
+	public void initFullscreen() {
+		// Get hardware graphics
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice gd = ge.getDefaultScreenDevice();
+
+		// Get the window GamePanel is in
+		JFrame window = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+		if(gd.isFullScreenSupported()) {
+			window.dispose();
+			window.setUndecorated(true);
+
+			gd.setFullScreenWindow(window);
+
+			// Get actual monitor dimension
+			fullscreenWidth = window.getWidth();
+			fullscreenHeight = window.getHeight();
+			isFullscreen = true;
+
+			// Initialize virtualCanvas at our virtual screen size
+			// defined in GameEngine
+			virtualCanvas = new BufferedImage(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			g2Virtual = virtualCanvas.createGraphics();
+
+			window.setVisible(true);
+		} else {
+			System.err.println("Fullscreen not supported");
+		}
+	}
 }

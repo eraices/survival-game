@@ -33,6 +33,8 @@ public class GameEngine {
 
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
+
+		gamePanel.initFullscreen();
 		
 		gamePanel.startGameThread();
 	}
