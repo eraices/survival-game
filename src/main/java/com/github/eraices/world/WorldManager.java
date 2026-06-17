@@ -13,9 +13,12 @@ public class WorldManager {
     
     private GamePanel gp;
     private BufferedImage[] blockTextures;
+    private long seed = 1654861354861351L;
+    private double frequency = 0.05;
 
     public WorldManager(GamePanel gp) {
         this.gp = gp;
+        seed = System.nanoTime();
         initBlockTextures();
     }
 
@@ -90,7 +93,7 @@ public class WorldManager {
             for(int y = 0; y < Chunk.CHUNK_SIZE; y++) {
                 // Calculate world coordinates to determine the block
                 int worldX = (chunkX * Chunk.CHUNK_SIZE) + x;
-                int worldY = (chunkX * Chunk.CHUNK_SIZE) + y;
+                int worldY = (chunkY * Chunk.CHUNK_SIZE) + y;
 
                 // Now determine the block
                 int blockID = generateBlock(worldX, worldY);
@@ -102,14 +105,24 @@ public class WorldManager {
     }
 
     private int generateBlock(int worldX, int worldY) {
-        // TODO Replace this with better worldgen code later
-        double noise = Math.sin(worldX * 0.1) + Math.cos(worldY * 0.1);
-        
-        return (noise < 0) ? BlockID.DIRT : BlockID.WATER;
+        double noise = OpenSimplex2S.noise2(seed, worldX * frequency, worldY * frequency);
+
+        // Map the continuous noise value to your block types
+        if (noise < -0.40) {
+            return BlockID.WATER;
+        } else if (noise < -0.25) {
+            return BlockID.SAND;
+        } else if (noise < -0.05) {
+            return BlockID.DIRT;
+        } else if (noise < 0.55) {
+            return BlockID.GRASS;
+        } else {
+            return BlockID.TREE;
+        }
     }
 
     private void initBlockTextures() {
-        blockTextures = new BufferedImage[5];
+        blockTextures = new BufferedImage[BlockID.NUM_BLOCKS];
 
         // Calculate parameters for AssetHandler
         int frameWidth = gp.ogTileSize;
