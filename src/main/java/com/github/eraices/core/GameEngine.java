@@ -5,8 +5,8 @@ import javax.swing.JFrame;
 public class GameEngine {
 	// The game will calculate based on these dimensions,
 	// regardless of the actual window dimensions
-	public static final int VIRTUAL_SCREEN_WIDTH = 800;
-	public static final int VIRTUAL_SCREEN_HEIGHT = 600;
+	public static final int VIRTUAL_SCREEN_WIDTH = 960;
+	public static final int VIRTUAL_SCREEN_HEIGHT = 540;
 
 	private JFrame window;
 
