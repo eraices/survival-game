@@ -44,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// Set panel settings
 		this.setPreferredSize(new Dimension(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT));
 		this.setDoubleBuffered(true); // Basically improves performance
-		this.setBackground(Color.CYAN);
+		this.setBackground(Color.BLACK);
 
 		// Add KeyHandler
 		this.addKeyListener(keyH);
@@ -103,14 +103,27 @@ public class GamePanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
-		ui.setGraphics(g2);
+		
+		if(isFullscreen) {
+			// Clear off-screen canvas
+			g2Virtual.clearRect(0, 0, GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT);
 
-		gsm.getCurrentGameState().draw(g2);
+			// Use g2Virtual instead of g2 for fullscreen
+			ui.setGraphics(g2Virtual);
+			gsm.getCurrentGameState().draw(g2Virtual);
 
-		g.dispose(); // Clear up graphics resources efficiently
+			// Blit to hardware screen
+        g2.drawImage(virtualCanvas, 0, 0, fullscreenWidth, fullscreenHeight, null);
+		} else {
+			// Use g2 instead of g2virtual for windowed
+			ui.setGraphics(g2);
+			gsm.getCurrentGameState().draw(g2);
+		}
+
+		g2.dispose(); // Clear up graphics resources efficiently
     }
 
-	public void initFullscreen() {
+	public void toggleFullscreen() {
 		// Get hardware graphics
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getDefaultScreenDevice();
@@ -118,25 +131,49 @@ public class GamePanel extends JPanel implements Runnable {
 		// Get the window GamePanel is in
 		JFrame window = (JFrame) SwingUtilities.getWindowAncestor(this);
 
-		if(gd.isFullScreenSupported()) {
+		isFullscreen = !isFullscreen;
+
+		if(isFullscreen) {						// Enter fullscreen
+			if(gd.isFullScreenSupported()) {
+				window.dispose();
+				window.setUndecorated(true);
+
+				gd.setFullScreenWindow(window);
+
+				// Get actual monitor dimension
+				fullscreenWidth = window.getWidth();
+				fullscreenHeight = window.getHeight();
+				isFullscreen = true;
+
+				// Initialize virtualCanvas at our virtual screen size
+				// defined in GameEngine
+				virtualCanvas = new BufferedImage(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+				g2Virtual = virtualCanvas.createGraphics();
+
+				window.setVisible(true);
+			} else {
+				System.err.println("Fullscreen not supported");
+			}
+		} else { // Exit fullscreen
 			window.dispose();
-			window.setUndecorated(true);
+			window.setUndecorated(false);
 
-			gd.setFullScreenWindow(window);
+			gd.setFullScreenWindow(null);
 
-			// Get actual monitor dimension
-			fullscreenWidth = window.getWidth();
-			fullscreenHeight = window.getHeight();
-			isFullscreen = true;
+			// Reset to virtual screen size defined in GameEngine
+			this.setPreferredSize(new Dimension(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT));
 
-			// Initialize virtualCanvas at our virtual screen size
-			// defined in GameEngine
-			virtualCanvas = new BufferedImage(GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-			g2Virtual = virtualCanvas.createGraphics();
-
+			window.pack();
+			window.setLocationRelativeTo(null);
 			window.setVisible(true);
-		} else {
-			System.err.println("Fullscreen not supported");
+
+			// Clean up virtual graphics since we're not using them anymore
+			if(g2Virtual != null) {
+				g2Virtual.dispose();
+				virtualCanvas = null;
+			}
 		}
+
+		
 	}
 }

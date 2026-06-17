@@ -32,6 +32,7 @@ public class KeyHandler implements KeyListener {
             case Key.A -> press(LEFT);
             case Key.S -> press(DOWN);
             case Key.D -> press(RIGHT);
+            case Key.F_11 -> gp.toggleFullscreen();
             default -> {} // Do nothing
         }
 
