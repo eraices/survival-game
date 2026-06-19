@@ -4,11 +4,14 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import com.github.eraices.core.AssetHandler;
 import com.github.eraices.core.GamePanel;
 
 public class WorldManager {
+    public static final long LARGE_PRIME_A = 479001599L;
+    public static final long LARGE_PRIME_B = 87178291199L;
     private Map<String, Chunk> loadedChunks = new HashMap<>(); // Holds already-generated chunks
     
     private GamePanel gp;
@@ -105,12 +108,20 @@ public class WorldManager {
     }
 
     private int generateBlock(int worldX, int worldY) {
+        // If no stone cluster, generate normally
         double noise = OpenSimplex2S.noise2(seed, worldX * frequency, worldY * frequency);
 
         // Map the continuous noise value to specific block types
         if (noise < -0.40) {
             return BlockID.WATER;
-        } else if (noise < -0.25) {
+        }
+
+        // Stone clusters can't generate on water, but can elsewhere
+        if(isBlockInsideStoneCluster(worldX, worldY)) {
+            return BlockID.STONE;
+        }
+        
+        if (noise < -0.25) {
             return BlockID.SAND;
         } else if (noise < -0.05) {
             return BlockID.DIRT;
@@ -119,6 +130,44 @@ public class WorldManager {
         } else {
             return BlockID.TREE;
         }
+    }
+
+    private boolean isBlockInsideStoneCluster(int worldX, int worldY) {
+        // Determine which chunk this block is in
+        int chunkX = Math.floorDiv(worldX, Chunk.CHUNK_SIZE);
+        int chunkY = Math.floorDiv(worldY, Chunk.CHUNK_SIZE);
+
+        // Check neighboring chunks for stone clusters
+        for(int currentChunkX = chunkX - 1; currentChunkX <= chunkX + 1; currentChunkX++) {
+            for(int currentChunkY = chunkY - 1; currentChunkY <= chunkY + 1; currentChunkY++) {
+
+                // Using a unique seed will yield the same values
+                long chunkSeed = ((long) currentChunkX * LARGE_PRIME_A) + ((long) currentChunkY * LARGE_PRIME_B) + seed;
+                Random rand = new Random(chunkSeed);
+
+                // 25% chance this chunk has a stone cluster
+                if(rand.nextFloat() < 0.25f) {
+                    // Calculate the world coordinates of the cluster center
+                    int clusterCenterX = (currentChunkX * Chunk.CHUNK_SIZE) + rand.nextInt(Chunk.CHUNK_SIZE);
+                    int clusterCenterY = (currentChunkY * Chunk.CHUNK_SIZE) + rand.nextInt(Chunk.CHUNK_SIZE);
+
+                    // Determine the cluster's radius
+                    int minRadius = 2;
+                    int maxRadius = 4;
+                    int radius = rand.nextInt((maxRadius - minRadius) + 1) + minRadius; 
+
+                    // Calculate this block's distance to cluster center
+                    int distanceX = worldX - clusterCenterX;
+                    int distanceY = worldY - clusterCenterY;
+
+                    if((distanceX * distanceX) + (distanceY * distanceY) <= (radius * radius)) {
+                        return true; // This block is insdie a stone cluster
+                    }
+                }
+            }
+        }
+
+        return false; // This block is not inside a stone cluster
     }
 
     private void initBlockTextures() {

@@ -14,6 +14,9 @@ public class UI {
     private GamePanel gp;
     private Graphics2D g2;
     private Font font;
+    private Color boxColor = Color.BLACK;
+    private Color borderColor = Color.WHITE;
+    private Color textColor = Color.WHITE;
 
     public UI(GamePanel gp) {
         this.gp = gp;
@@ -34,11 +37,11 @@ public class UI {
         } else if (selected) {
             g2.setColor(Color.yellow);
         } else {
-            g2.setColor(Color.white);
+            g2.setColor(boxColor);
         }
         g2.fillRoundRect(x, y, width, height, 35, 35);
         
-        g2.setColor(Color.black);
+        g2.setColor(borderColor);
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
@@ -47,11 +50,10 @@ public class UI {
         if (chosen) {
             g2.setColor(Color.lightGray);
         } else {
-            g2.setColor(Color.white);
+            g2.setColor(boxColor);
         }
 
         g2.fillRoundRect(x, y, width, height, 35, 35);
-        g2.setColor(Color.black);
     }
 
     public void drawPlayerCoords() {
@@ -62,10 +64,7 @@ public class UI {
         int textX = gp.tileSize / 4;
         int textY = gp.tileSize / 4 + this.getTextHeight(text);
 
-        g2.drawString(text, textX, textY);
-    }
-
-    public void drawString(String text, int textX, int textY) {
+        g2.setColor(textColor);
         g2.drawString(text, textX, textY);
     }
 
