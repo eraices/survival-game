@@ -3,6 +3,7 @@ package com.github.eraices.states;
 import java.awt.Graphics2D;
 
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.core.Key;
 import com.github.eraices.core.KeyHandler;
 import com.github.eraices.entities.Entity.Direction;
 
@@ -15,6 +16,7 @@ public class PlayState implements GameState {
 
     @Override
     public void handleInput(int keyCode) {
+        checkHotbarKeys(keyCode);
         checkPlayerMovement();
     }
 
@@ -28,6 +30,20 @@ public class PlayState implements GameState {
         gp.world.draw(g2);
         gp.player.draw(g2);
         gp.ui.drawHUD();
+    }
+
+    private void checkHotbarKeys(int keyCode) {
+        switch(keyCode) {
+            case Key._1 -> gp.player.setHotbarSelection(1);
+            case Key._2 -> gp.player.setHotbarSelection(2);
+            case Key._3 -> gp.player.setHotbarSelection(3);
+            case Key._4 -> gp.player.setHotbarSelection(4);
+            case Key._5 -> gp.player.setHotbarSelection(5);
+            case Key._6 -> gp.player.setHotbarSelection(6);
+            case Key._7 -> gp.player.setHotbarSelection(7);
+            case Key._8 -> gp.player.setHotbarSelection(8);
+            case Key._9 -> gp.player.setHotbarSelection(9);
+        }
     }
     
     // If no movement keys are being pressed, stops player movement.

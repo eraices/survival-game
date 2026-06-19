@@ -14,11 +14,11 @@ public class UI {
     private GamePanel gp;
     private Graphics2D g2;
     private Font font;
-    private Color boxColor = Color.BLACK;
-    private Color borderColor = Color.WHITE;
-    private Color textColor = Color.WHITE;
-    private Color chosenColor = Color.GRAY;
-    private Color selectedColor = Color.YELLOW;
+    private Color boxColor = new Color(16, 20, 31); // Black
+    private Color borderColor = new Color(168, 181, 178); // Gray
+    private Color textColor = new Color(235, 237, 233); // White
+    private Color chosenColor = new Color(168, 181, 178); // Gray
+    private Color selectedColor = new Color(87, 114, 119); // Dark gray
 
     public UI(GamePanel gp) {
         this.gp = gp;
@@ -141,7 +141,7 @@ public class UI {
         for(int slot = 0; slot < numSlots; slot++) {
             slotX = getXForCenteredSubBox(fakeHotbarX + (splitWidth * slot), splitWidth, slotWidth);
 
-            drawBox(slotX, slotY, slotWidth, slotHeight, false, false);
+            drawBox(slotX, slotY, slotWidth, slotHeight, gp.player.getHotbarSelection() == (slot + 1), false);
         }
     }
 

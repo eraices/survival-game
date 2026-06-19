@@ -7,6 +7,8 @@ import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 
 public class Player extends Entity {
+    private int hotbarSelection = 1;
+
     public Player(GamePanel gp, int worldX, int worldY, int speed) {
         super(gp, worldX, worldY, speed);
         width = gp.tileSize;
@@ -15,6 +17,14 @@ public class Player extends Entity {
         setHurtboxLocationToSelf();
         frameLength = 6;
         setSpriteSheet("/sprites/Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
+    }
+
+    public int getHotbarSelection() {
+        return hotbarSelection;
+    }
+
+    public void setHotbarSelection(int hotbarSelection) {
+        this.hotbarSelection = hotbarSelection;
     }
 
     public int getScreenX() {
