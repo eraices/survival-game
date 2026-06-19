@@ -17,6 +17,8 @@ public class UI {
     private Color boxColor = Color.BLACK;
     private Color borderColor = Color.WHITE;
     private Color textColor = Color.WHITE;
+    private Color chosenColor = Color.GRAY;
+    private Color selectedColor = Color.YELLOW;
 
     public UI(GamePanel gp) {
         this.gp = gp;
@@ -31,18 +33,23 @@ public class UI {
 		}
     }
 
+    public void drawHUD() {
+        drawPlayerCoords();
+        drawHotbar();
+    }
+
     public void drawBox(int x, int y, int width, int height, boolean chosen, boolean selected) {
         if (chosen && !selected) {
-            g2.setColor(Color.lightGray);
+            g2.setColor(chosenColor);
         } else if (selected) {
-            g2.setColor(Color.yellow);
+            g2.setColor(selectedColor);
         } else {
             g2.setColor(boxColor);
         }
         g2.fillRoundRect(x, y, width, height, 35, 35);
         
         g2.setColor(borderColor);
-        g2.setStroke(new BasicStroke(5));
+        g2.setStroke(new BasicStroke(gp.scale));
         g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
 
@@ -54,18 +61,6 @@ public class UI {
         }
 
         g2.fillRoundRect(x, y, width, height, 35, 35);
-    }
-
-    public void drawPlayerCoords() {
-        int xCoord = gp.player.getXCoord();
-        int yCoord = gp.player.getYCoord();
-
-        String text = "(X: " + xCoord + ", Y: " + yCoord + ")";
-        int textX = gp.tileSize / 4;
-        int textY = gp.tileSize / 4 + this.getTextHeight(text);
-
-        g2.setColor(textColor);
-        g2.drawString(text, textX, textY);
     }
 
     public int getXForCenteredBox(int boxWidth) {
@@ -120,5 +115,45 @@ public class UI {
 
     private int getTextHeight(String text) {
         return (int)g2.getFontMetrics().getAscent();
+    }
+
+    private void drawHotbar() {
+        int numSlots = 9;
+
+        int hotbarWidth = gp.tileSize * (numSlots + 1);
+        int hotbarHeight = gp.tileSize * 3 / 2; // * 1.5
+        int hotbarX = (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (hotbarWidth / 2);
+        int hotbarY = GameEngine.VIRTUAL_SCREEN_HEIGHT - hotbarHeight - (gp.tileSize / 2);
+
+        drawBox(hotbarX, hotbarY, hotbarWidth, hotbarHeight, false, false);
+
+        // Fake hotbar width and x we'll use for slots, so they're not touching the edge
+        int fakeHotbarWidth = hotbarWidth - gp.tileSize;
+        int fakeHotbarX = getXForCenteredSubBox(hotbarX, hotbarWidth, fakeHotbarWidth);
+
+        int slotWidth = gp.tileSize;
+        int slotHeight = gp.tileSize;
+        int slotX; // Will vary depending on the slot
+        int slotY = getYForCenteredSubBox(hotbarY, hotbarHeight, slotHeight);
+        
+        int splitWidth = fakeHotbarWidth / numSlots; // Slots will be centered using this width
+
+        for(int slot = 0; slot < numSlots; slot++) {
+            slotX = getXForCenteredSubBox(fakeHotbarX + (splitWidth * slot), splitWidth, slotWidth);
+
+            drawBox(slotX, slotY, slotWidth, slotHeight, false, false);
+        }
+    }
+
+    private void drawPlayerCoords() {
+        int xCoord = gp.player.getXCoord();
+        int yCoord = gp.player.getYCoord();
+
+        String text = "(X: " + xCoord + ", Y: " + yCoord + ")";
+        int textX = gp.tileSize / 4;
+        int textY = gp.tileSize / 4 + this.getTextHeight(text);
+
+        g2.setColor(textColor);
+        g2.drawString(text, textX, textY);
     }
 }

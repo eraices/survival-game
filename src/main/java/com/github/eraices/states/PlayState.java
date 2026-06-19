@@ -27,7 +27,7 @@ public class PlayState implements GameState {
     public void draw(Graphics2D g2) {
         gp.world.draw(g2);
         gp.player.draw(g2);
-        gp.ui.drawPlayerCoords();
+        gp.ui.drawHUD();
     }
     
     // If no movement keys are being pressed, stops player movement.
