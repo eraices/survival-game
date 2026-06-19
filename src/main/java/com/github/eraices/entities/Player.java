@@ -11,6 +11,8 @@ public class Player extends Entity {
         super(gp, worldX, worldY, speed);
         width = gp.tileSize;
         height = gp.tileSize;
+        initHurtbox(width, height);
+        setHurtboxLocationToSelf();
         frameLength = 6;
         setSpriteSheet("/sprites/Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
     }

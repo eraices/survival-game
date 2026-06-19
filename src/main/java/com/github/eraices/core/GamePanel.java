@@ -26,8 +26,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public GameStateManager gsm = new GameStateManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
-	public Player player = new Player(this, 0, 0, 5);
+	public Player player = new Player(this, 0, 0, 4);
 	public WorldManager world = new WorldManager(this);
+	public CollisionChecker cChecker = new CollisionChecker(this);
 
 
     private Thread gameThread;
@@ -110,7 +111,7 @@ public class GamePanel extends JPanel implements Runnable {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
-		if(isFullscreen) {
+		if(isFullscreen && g2Virtual != null) {
 			// Clear off-screen canvas
 			g2Virtual.clearRect(0, 0, GameEngine.VIRTUAL_SCREEN_WIDTH, GameEngine.VIRTUAL_SCREEN_HEIGHT);
 

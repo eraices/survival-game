@@ -62,7 +62,7 @@ public class WorldManager {
                     for(int localY = 0; localY < Chunk.CHUNK_SIZE; localY++) {
 
                         // Determine which block this is
-                        int blockID = chunk.getBlockAt(localX, localY);
+                        int blockID  = chunk.getBlockAt(localX, localY);
 
                         // If it's air, skip drawing
                         if(blockID == BlockID.AIR) {
@@ -107,7 +107,7 @@ public class WorldManager {
     private int generateBlock(int worldX, int worldY) {
         double noise = OpenSimplex2S.noise2(seed, worldX * frequency, worldY * frequency);
 
-        // Map the continuous noise value to your block types
+        // Map the continuous noise value to specific block types
         if (noise < -0.40) {
             return BlockID.WATER;
         } else if (noise < -0.25) {
