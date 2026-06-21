@@ -23,10 +23,11 @@ public class Entity {
     protected int frameLength;
     protected int worldX;
     protected int worldY;
-    protected int speed;
+    protected double speed;
     protected int width;
     protected int height;
     protected boolean isMoving = false;
+    protected boolean isSprinting = false;
     protected int maxHealth;
     protected int currentHealth;
 
@@ -100,6 +101,19 @@ public class Entity {
         }
 
         setSprite();
+    }
+
+    public boolean isSprinting() {
+        return isSprinting;
+    }
+
+    public void toggleSprint() {
+        if(isSprinting) {
+            speed /= 2;
+        } else {
+            speed *= 2;
+        }
+        isSprinting = !isSprinting;
     }
 
     public void setSprite() {

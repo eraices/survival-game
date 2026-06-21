@@ -18,6 +18,10 @@ public class PlayState implements GameState {
     public void handleInput(int keyCode) {
         checkHotbarKeys(keyCode);
         checkPlayerMovement();
+        if((gp.keyH.isPressed(KeyHandler.SPRINT) && !gp.player.isSprinting())
+            || (!gp.keyH.isPressed(KeyHandler.SPRINT) && gp.player.isSprinting())) {
+            gp.player.toggleSprint();
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.github.eraices.entities;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import com.github.eraices.core.GameEngine;
