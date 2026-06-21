@@ -16,7 +16,17 @@ public class Player extends Entity {
         initHurtbox(width, height);
         setHurtboxLocationToSelf();
         frameLength = 6;
+        maxHealth = 20;
+        currentHealth = 15;
         setSpriteSheet("/sprites/Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
     }
 
     public int getHotbarSelection() {

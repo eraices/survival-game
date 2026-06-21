@@ -10,6 +10,11 @@ import java.io.InputStream;
 
 public class UI {
     private static final float DEFAULT_FONT_SIZE = 20f;
+    private static final int WIDTH = 0;
+    private static final int HEIGHT = 1;
+    private static final int X = 2;
+    private static final int Y = 3;
+    private static final int NUM_HOTBAR_SLOTS = 9;
 
     private GamePanel gp;
     private Graphics2D g2;
@@ -35,6 +40,7 @@ public class UI {
 
     public void drawHUD() {
         drawPlayerCoords();
+        drawHearts();
         drawHotbar();
     }
 
@@ -117,13 +123,36 @@ public class UI {
         return (int)g2.getFontMetrics().getAscent();
     }
 
-    private void drawHotbar() {
-        int numSlots = 9;
+    private void drawHearts() {
+        int numHearts = gp.player.getMaxHealth() / 2;           // Each heart = 2 health
+        int numFullHearts = gp.player.getCurrentHealth() / 2;
+        int numHalfHearts = gp.player.getCurrentHealth() % 2;   // Will either be 1 or 0
 
-        int hotbarWidth = gp.tileSize * (numSlots + 1);
-        int hotbarHeight = gp.tileSize * 3 / 2; // * 1.5
-        int hotbarX = (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (hotbarWidth / 2);
-        int hotbarY = GameEngine.VIRTUAL_SCREEN_HEIGHT - hotbarHeight - (gp.tileSize / 2);
+        // Coordinates of left-most heart
+        int startingX = hotbarDimensions(X);
+        int startingY = hotbarDimensions(Y) - (gp.tileSize / 2);
+
+        int currentX = startingX; // X coordinate of current heart
+
+        // Draw full hearts, then half hearts, then empty hearts
+        for(int heart = 0; heart < numHearts; heart++) {
+            if(heart < numFullHearts) {
+                g2.drawImage(gp.iManager.getIcon(Icon.FULL_HEART), currentX, startingY, null);
+            } else if(heart < (numFullHearts + numHalfHearts)) {
+                g2.drawImage(gp.iManager.getIcon(Icon.HALF_HEART), currentX, startingY, null);
+            } else {
+                g2.drawImage(gp.iManager.getIcon(Icon.EMPTY_HEART), currentX, startingY, null);
+            }
+
+            currentX += gp.tileSize / 2;
+        }
+    }
+
+    private void drawHotbar() {
+        int hotbarWidth = hotbarDimensions(WIDTH);
+        int hotbarHeight = hotbarDimensions(HEIGHT);
+        int hotbarX = hotbarDimensions(X);
+        int hotbarY = hotbarDimensions(Y);
 
         drawBox(hotbarX, hotbarY, hotbarWidth, hotbarHeight, false, false);
 
@@ -136,13 +165,23 @@ public class UI {
         int slotX; // Will vary depending on the slot
         int slotY = getYForCenteredSubBox(hotbarY, hotbarHeight, slotHeight);
         
-        int splitWidth = fakeHotbarWidth / numSlots; // Slots will be centered using this width
+        int splitWidth = fakeHotbarWidth / NUM_HOTBAR_SLOTS; // Slots will be centered using this width
 
-        for(int slot = 0; slot < numSlots; slot++) {
+        for(int slot = 0; slot < NUM_HOTBAR_SLOTS; slot++) {
             slotX = getXForCenteredSubBox(fakeHotbarX + (splitWidth * slot), splitWidth, slotWidth);
 
             drawBox(slotX, slotY, slotWidth, slotHeight, gp.player.getHotbarSelection() == (slot + 1), false);
         }
+    }
+
+    private int hotbarDimensions(int dimension) {
+        return switch(dimension) {
+            case WIDTH -> gp.tileSize * (NUM_HOTBAR_SLOTS + 1);
+            case HEIGHT -> gp.tileSize * 3 / 2; // * 1.5
+            case X -> (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - ((gp.tileSize * (NUM_HOTBAR_SLOTS + 1)) / 2);
+            case Y -> GameEngine.VIRTUAL_SCREEN_HEIGHT - (gp.tileSize * 3 / 2) - (gp.tileSize / 2);
+            default -> 0;
+        };
     }
 
     private void drawPlayerCoords() {

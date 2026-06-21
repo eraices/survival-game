@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Player player = new Player(this, 0, 0, 4);
 	public WorldManager world = new WorldManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);
+	public IconManager iManager = new IconManager(this);
 
 
     private Thread gameThread;

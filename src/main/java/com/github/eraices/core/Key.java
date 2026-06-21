@@ -25,6 +25,5 @@ public final class Key {
     public static final int ESCAPE = KeyEvent.VK_ESCAPE;
     public static final int F_11 = KeyEvent.VK_F11;
     
-    // Private constructor to prevent useless instantiation
     private Key() {}
 }

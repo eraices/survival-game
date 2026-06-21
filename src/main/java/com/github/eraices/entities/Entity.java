@@ -27,6 +27,8 @@ public class Entity {
     protected int width;
     protected int height;
     protected boolean isMoving = false;
+    protected int maxHealth;
+    protected int currentHealth;
 
     public Entity(GamePanel gp, int worldX, int worldY, int speed) {
         this.gp = gp;

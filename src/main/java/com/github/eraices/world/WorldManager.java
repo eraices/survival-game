@@ -15,7 +15,7 @@ public class WorldManager {
     private Map<String, Chunk> loadedChunks = new HashMap<>(); // Holds already-generated chunks
     
     private GamePanel gp;
-    private BufferedImage[] blockTextures;
+    private BufferedImage[] blockTextures = new BufferedImage[BlockID.NUM_BLOCKS];
     private long seed = 1654861354861351L;
     private double frequency = 0.05;
 
@@ -171,8 +171,6 @@ public class WorldManager {
     }
 
     private void initBlockTextures() {
-        blockTextures = new BufferedImage[BlockID.NUM_BLOCKS];
-
         // Calculate parameters for AssetHandler
         int frameWidth = gp.ogTileSize;
         int frameHeight = gp.ogTileSize;
