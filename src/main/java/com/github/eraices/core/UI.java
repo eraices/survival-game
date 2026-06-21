@@ -144,7 +144,7 @@ public class UI {
                 g2.drawImage(gp.iManager.getIcon(Icon.EMPTY_HEART), currentX, startingY, null);
             }
 
-            currentX += gp.tileSize / 2;
+            currentX += (gp.tileSize / 2) - gp.scale + 1;
         }
     }
 

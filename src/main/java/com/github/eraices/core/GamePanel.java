@@ -21,12 +21,12 @@ public class GamePanel extends JPanel implements Runnable {
 	private final double DRAW_INTERVAL = 1000000000.0 / FPS;
 	
 	public int ogTileSize = 16;
-	public int scale = 3;
+	public int scale = 2;
 	public int tileSize = ogTileSize * scale;
 	public GameStateManager gsm = new GameStateManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
-	public Player player = new Player(this, 0, 0, 4);
+	public Player player = new Player(this, 0, 0, 2);
 	public WorldManager world = new WorldManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public IconManager iManager = new IconManager(this);
