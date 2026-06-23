@@ -34,7 +34,7 @@ public class HUD {
 
         // Coordinates of left-most heart
         int startingX = hotbarDimensions(X);
-        int startingY = hotbarDimensions(Y) - (gp.tileSize / 2);
+        int startingY = hotbarDimensions(Y) - ui.iconSize;
 
         int currentX = startingX; // X coordinate of current heart
 
@@ -48,7 +48,7 @@ public class HUD {
                 ui.g2.drawImage(gp.iManager.getIcon(Icon.EMPTY_HEART), currentX, startingY, null);
             }
 
-            currentX += (gp.tileSize / 2) - gp.scale + 1;
+            currentX += ui.iconSize - gp.scale + 1;
         }
     }
 
@@ -79,7 +79,16 @@ public class HUD {
     }
 
     private void drawHunger() {
-        
+        int hungerX = hotbarDimensions(X) - (ui.iconSize * 3 / 2); // * 1.5
+        int hungerY = ui.getYForCenteredSubBox(hotbarDimensions(Y), hotbarDimensions(HEIGHT), ui.iconSize);
+
+        // Calculate player's health, rounded up
+        int playerHunger = (int) Math.ceil(gp.player.getCurrentHunger()); 
+
+        // Calculate the index of the proper icon depending on the player's current hunger
+        int hungerIcon = (int) gp.player.getMaxHunger() - playerHunger + Icon.FULL_HUNGER;
+
+        ui.g2.drawImage(gp.iManager.getIcon(hungerIcon), hungerX, hungerY, gp);
     }
 
     private int hotbarDimensions(int dimension) {

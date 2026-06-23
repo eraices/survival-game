@@ -23,11 +23,14 @@ public class UI {
     protected Color textColor = new Color(235, 237, 233); // White
     protected Color chosenColor = new Color(168, 181, 178); // Gray
     protected Color selectedColor = new Color(87, 114, 119); // Dark gray
+    protected int iconSize;
 
     private HUD hud;
 
     public UI(GamePanel gp) {
         this.gp = gp;
+        iconSize = gp.tileSize / 2;
+        
         hud = new HUD(gp, this);
 
         // Set the font

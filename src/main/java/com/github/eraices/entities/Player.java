@@ -7,8 +7,8 @@ import com.github.eraices.core.GamePanel;
 
 public class Player extends Entity {
     private int hotbarSelection = 1;
-    private int maxHunger = 20;
-    private int currentHunger = 15;
+    private double maxHunger = 8;
+    private double currentHunger = 6;
     private double digestion = 0;
 
     public Player(GamePanel gp, int worldX, int worldY, int speed) {
@@ -37,6 +37,14 @@ public class Player extends Entity {
 
     public void setHotbarSelection(int hotbarSelection) {
         this.hotbarSelection = hotbarSelection;
+    }
+
+    public double getCurrentHunger() {
+        return currentHunger;
+    }
+
+    public double getMaxHunger() {
+        return maxHunger;
     }
 
     public int getScreenX() {
