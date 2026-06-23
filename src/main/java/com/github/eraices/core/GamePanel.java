@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 
 import com.github.eraices.core.GameStateManager.State;
 import com.github.eraices.entities.Player;
+import com.github.eraices.ui.UI;
 import com.github.eraices.world.WorldManager;
 
 public class GamePanel extends JPanel implements Runnable {

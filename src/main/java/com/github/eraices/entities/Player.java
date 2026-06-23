@@ -7,6 +7,9 @@ import com.github.eraices.core.GamePanel;
 
 public class Player extends Entity {
     private int hotbarSelection = 1;
+    private int maxHunger = 20;
+    private int currentHunger = 15;
+    private double digestion = 0;
 
     public Player(GamePanel gp, int worldX, int worldY, int speed) {
         super(gp, worldX, worldY, speed);
@@ -48,6 +51,14 @@ public class Player extends Entity {
     public void update() {
         if(isMoving) {
             move();
+        }
+    }
+
+    @Override
+    public void move() {
+        super.move();
+        if(isSprinting) {
+            digestion += 0.01;
         }
     }
 
