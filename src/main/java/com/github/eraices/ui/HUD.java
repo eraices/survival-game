@@ -28,21 +28,21 @@ public class HUD {
     }
 
     private void drawHearts() {
-        int numHearts = gp.player.getMaxHealth() / 2;           // Each heart = 2 health
+        int numHearts = gp.player.getMaxHealth() / 2;           // Each hunger = 2 health
         int numFullHearts = gp.player.getCurrentHealth() / 2;
         int numHalfHearts = gp.player.getCurrentHealth() % 2;   // Will either be 1 or 0
 
-        // Coordinates of left-most heart
+        // Coordinates of left-most hunger
         int startingX = hotbarDimensions(X);
         int startingY = hotbarDimensions(Y) - ui.iconSize;
 
-        int currentX = startingX; // X coordinate of current heart
+        int currentX = startingX; // X coordinate of current hunger
 
-        // Draw full hearts, then half hearts, then empty hearts
-        for(int heart = 0; heart < numHearts; heart++) {
-            if(heart < numFullHearts) {
+        // Draw full hungers, then half hungers, then empty hungers
+        for(int hunger = 0; hunger < numHearts; hunger++) {
+            if(hunger < numFullHearts) {
                 ui.g2.drawImage(gp.iManager.getIcon(Icon.FULL_HEART), currentX, startingY, null);
-            } else if(heart < (numFullHearts + numHalfHearts)) {
+            } else if(hunger < (numFullHearts + numHalfHearts)) {
                 ui.g2.drawImage(gp.iManager.getIcon(Icon.HALF_HEART), currentX, startingY, null);
             } else {
                 ui.g2.drawImage(gp.iManager.getIcon(Icon.EMPTY_HEART), currentX, startingY, null);
@@ -79,16 +79,28 @@ public class HUD {
     }
 
     private void drawHunger() {
-        int hungerX = hotbarDimensions(X) - (ui.iconSize * 3 / 2); // * 1.5
-        int hungerY = ui.getYForCenteredSubBox(hotbarDimensions(Y), hotbarDimensions(HEIGHT), ui.iconSize);
+        int numHunger = gp.player.getMaxHunger() / 2;           // Each icon = 2 hunger
+        int numFullHunger = gp.player.getCurrentHunger() / 2;
+        int numHalfHunger = gp.player.getCurrentHunger() % 2;   // Will either be 1 or 0
 
-        // Calculate player's health, rounded up
-        int playerHunger = (int) Math.ceil(gp.player.getCurrentHunger()); 
+        // Coordinates of right-most icon
+        int startingX = hotbarDimensions(X) + hotbarDimensions(WIDTH) - ui.iconSize;
+        int startingY = hotbarDimensions(Y) - ui.iconSize;
 
-        // Calculate the index of the proper icon depending on the player's current hunger
-        int hungerIcon = (int) gp.player.getMaxHunger() - playerHunger + Icon.FULL_HUNGER;
+        int currentX = startingX; // X coordinate of current icon
 
-        ui.g2.drawImage(gp.iManager.getIcon(hungerIcon), hungerX, hungerY, gp);
+        // Draw full hunger icons, then half icons, then empty icons
+        for(int hunger = 0; hunger < numHunger; hunger++) {
+            if(hunger < numFullHunger) {
+                ui.g2.drawImage(gp.iManager.getIcon(Icon.FULL_HUNGER), currentX, startingY, null);
+            } else if(hunger < (numFullHunger + numHalfHunger)) {
+                ui.g2.drawImage(gp.iManager.getIcon(Icon.HALF_HUNGER), currentX, startingY, null);
+            } else {
+                ui.g2.drawImage(gp.iManager.getIcon(Icon.EMPTY_HUNGER), currentX, startingY, null);
+            }
+
+            currentX -= ui.iconSize - gp.scale + 1;
+        }
     }
 
     private int hotbarDimensions(int dimension) {

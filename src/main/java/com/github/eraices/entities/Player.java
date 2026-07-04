@@ -6,9 +6,11 @@ import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 
 public class Player extends Entity {
+    private static final double DIGESTION_THRESHOLD = 10;
+
     private int hotbarSelection = 1;
-    private double maxHunger = 8;
-    private double currentHunger = 6;
+    private int maxHunger = 20;
+    private int currentHunger = 15;
     private double digestion = 0;
 
     public Player(GamePanel gp, int worldX, int worldY, int speed) {
@@ -39,12 +41,21 @@ public class Player extends Entity {
         this.hotbarSelection = hotbarSelection;
     }
 
-    public double getCurrentHunger() {
+    public int getCurrentHunger() {
         return currentHunger;
     }
 
-    public double getMaxHunger() {
+    public int getMaxHunger() {
         return maxHunger;
+    }
+
+    public void incDigestion(double amount) {
+        digestion += amount;
+
+        if(digestion >= DIGESTION_THRESHOLD) { // Decrease hunger by 1
+            currentHunger--;
+            digestion -= DIGESTION_THRESHOLD;
+        }
     }
 
     public int getScreenX() {
@@ -66,7 +77,7 @@ public class Player extends Entity {
     public void move() {
         super.move();
         if(isSprinting) {
-            digestion += 0.01;
+            incDigestion(0.01);
         }
     }
 
