@@ -11,6 +11,8 @@ public class Entity {
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
     }
+
+    public static final int NUM_I_FRAMES = 30;
     
     protected Direction direction = Direction.DOWN;
     protected Direction movingDirection = Direction.DOWN;
@@ -30,6 +32,8 @@ public class Entity {
     protected boolean isSprinting = false;
     protected int maxHealth;
     protected int currentHealth;
+    protected boolean isInvincible = false;
+    protected int iFrameCounter = 0;
 
     public Entity(GamePanel gp, int worldX, int worldY, int speed) {
         this.gp = gp;
@@ -133,6 +137,7 @@ public class Entity {
 
     public void update() {
         // TODO: Implement this
+        checkInvincibility();
     }
 
     public void draw(Graphics2D g2) {
@@ -148,6 +153,17 @@ public class Entity {
 		
 		setSprite();
 	}
+
+    public void checkInvincibility() {
+        if(isInvincible) {
+            iFrameCounter++;
+
+            if(iFrameCounter >= NUM_I_FRAMES) {
+                isInvincible = false;
+                iFrameCounter = 0;
+            }
+        }
+    }
 
     public void checkSprite() {
 		if(spriteCounter < frameLength) {
@@ -250,5 +266,27 @@ public class Entity {
         }
 
         return worldY; // Entity is already touching the edge
+    }
+
+    public void die() {
+        // TODO: Proplerly implement death
+        speed = 0;
+    }
+
+    public void heal(int amount) {
+        currentHealth = Math.min(currentHealth + amount, maxHealth);
+    }
+
+    public void takeDamage(int amount) {
+        // Only take damage if not in invincibility
+        if(!isInvincible) {
+            currentHealth = Math.max(currentHealth - amount, 0);
+        }
+        
+        if(currentHealth <= 0) {
+            die();
+        } else {
+            isInvincible = true;
+        }
     }
 }
