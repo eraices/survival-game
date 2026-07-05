@@ -2,7 +2,6 @@ package com.github.eraices.core;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 import java.io.IOException;
 import java.util.Objects;
 
