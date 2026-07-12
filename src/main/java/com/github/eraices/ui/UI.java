@@ -10,7 +10,6 @@ import java.io.InputStream;
 
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
-import com.github.eraices.core.Icon;
 
 public class UI {
     protected static final float DEFAULT_FONT_SIZE = 20f;
@@ -30,7 +29,7 @@ public class UI {
     public UI(GamePanel gp) {
         this.gp = gp;
         iconSize = gp.tileSize / 2;
-        
+
         hud = new HUD(gp, this);
 
         // Set the font
