@@ -13,6 +13,7 @@ import com.github.eraices.core.GamePanel;
 
 public class UI {
     protected static final float DEFAULT_FONT_SIZE = 20f;
+    protected static final float TINY_FONT_SIZE = 10f;
 
     protected GamePanel gp;
     protected Graphics2D g2;
@@ -20,6 +21,7 @@ public class UI {
     protected Color boxColor = new Color(16, 20, 31); // Black
     protected Color borderColor = new Color(168, 181, 178); // Gray
     protected Color textColor = new Color(235, 237, 233); // White
+    protected Color textShadowColor = new Color(16, 20, 31); // Black
     protected Color chosenColor = new Color(168, 181, 178); // Gray
     protected Color selectedColor = new Color(87, 114, 119); // Dark gray
     protected int iconSize;
@@ -71,6 +73,19 @@ public class UI {
         g2.fillRoundRect(x, y, width, height, 35, 35);
     }
 
+    public void drawText(String text, int textX, int textY) {
+        // Draw outline first
+        g2.setColor(textShadowColor);
+        g2.drawString(text, textX - 1, textY);
+        g2.drawString(text, textX + 1, textY);
+        g2.drawString(text, textX, textY - 1);
+        g2.drawString(text, textX, textY + 1);
+
+        // Then draw actual text
+        g2.setColor(textColor);
+        g2.drawString(text, textX, textY);
+    }
+
     public int getXForCenteredBox(int boxWidth) {
         return (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (boxWidth / 2);
     }
@@ -112,9 +127,18 @@ public class UI {
 		return tailX - length;
 	}
 
+    public int getYForBottomAlignedText(int bottomY) {
+        int descent = g2.getFontMetrics().getDescent();
+        return bottomY - descent;
+}
+
 	public void setFontSize(int size) {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, size));
 	}
+
+    public void setFontSizeTiny() {
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, TINY_FONT_SIZE));
+    }
 
     public void setGraphics(Graphics2D g2) {
         this.g2 = g2;

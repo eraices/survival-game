@@ -4,11 +4,14 @@ import java.awt.Graphics2D;
 
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.core.Item;
 
 public class Player extends Entity {
     private static final double DIGESTION_THRESHOLD = 10;
     private static final double PASSIVE_HEALING_THRESHOLD = 10;
+    private static final int NUM_HOTBAR_SLOTS = 9;
 
+    private InventorySlot[] hotbar = new InventorySlot[NUM_HOTBAR_SLOTS];
     private int hotbarSelection = 1;
     private int maxHunger = 20;
     private int currentHunger = 20;
@@ -25,6 +28,13 @@ public class Player extends Entity {
         maxHealth = 20;
         currentHealth = 1;
         setSpriteSheet("/sprites/Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
+
+        for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
+            hotbar[i] = new InventorySlot(null, 0);
+        }
+        hotbar[4].add(new Item("Bread", 64, false));
+        hotbar[4].add(new Item("Bread", 64, false));
+        hotbar[4].add(new Item("Bread", 64, false));
     }
 
     public int getMaxHealth() {
@@ -41,6 +51,10 @@ public class Player extends Entity {
 
     public void setHotbarSelection(int hotbarSelection) {
         this.hotbarSelection = hotbarSelection;
+    }
+
+    public InventorySlot getHotbarSlot(int slot) {
+        return hotbar[slot];
     }
 
     public int getCurrentHunger() {

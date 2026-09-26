@@ -1,8 +1,12 @@
 package com.github.eraices.ui;
 
+import java.awt.image.BufferedImage;
+
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Icon;
+import com.github.eraices.core.Item;
+import com.github.eraices.entities.InventorySlot;
 
 public class HUD {
     // These are all relating to the hotbar's size/position
@@ -75,6 +79,31 @@ public class HUD {
             slotX = ui.getXForCenteredSubBox(fakeHotbarX + (splitWidth * slot), splitWidth, slotWidth);
 
             ui.drawBox(slotX, slotY, slotWidth, slotHeight, gp.player.getHotbarSelection() == (slot + 1), false);
+
+            InventorySlot hotbarSlot = gp.player.getHotbarSlot(slot);
+            Item item = hotbarSlot.getItem();
+
+            if(item != null) {
+                BufferedImage icon = gp.iManager.getIcon(item.getName());
+                int iconWidth = icon.getWidth();
+                int iconHeight = icon.getHeight();
+                int iconX = ui.getXForCenteredSubBox(slotX, slotWidth, iconWidth);
+                int iconY = ui.getYForCenteredSubBox(slotY, slotHeight, iconHeight);
+
+                // Draw icon of item in this slot
+                ui.g2.drawImage(icon, iconX, iconY, null);
+
+                if(hotbarSlot.getCount() > 1) {
+                    ui.setFontSizeTiny();
+                    
+                    String text = String.valueOf(hotbarSlot.getCount());
+                    int textX = ui.getXForCenteredTextInBox(text, slotX, slotWidth);
+                    int textY = ui.getYForBottomAlignedText(slotY + slotHeight - 2);
+
+                    // Write amount of this item
+                    ui.drawText(text, textX, textY);
+                }
+            }
         }
     }
 
