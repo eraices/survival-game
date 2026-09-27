@@ -18,9 +18,9 @@ import com.github.eraices.ui.UI;
 import com.github.eraices.world.WorldManager;
 
 public class GamePanel extends JPanel implements Runnable {
-	private final int FPS = 60;
+	public static final int FPS = 60;
 	private final double DRAW_INTERVAL = 1000000000.0 / FPS;
-	
+
 	public int ogTileSize = 16;
 	public int scale = 2;
 	public int tileSize = ogTileSize * scale;

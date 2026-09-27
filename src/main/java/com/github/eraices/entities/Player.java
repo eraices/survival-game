@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Icon;
-import com.github.eraices.core.Item;
+import com.github.eraices.items.*;
 
 public class Player extends Entity {
     private static final double DIGESTION_THRESHOLD = 10;
@@ -16,7 +16,7 @@ public class Player extends Entity {
     private InventorySlot[] hotbar = new InventorySlot[NUM_HOTBAR_SLOTS];
     private int hotbarSelection = 1;
     private int maxHunger = 20;
-    private int currentHunger = 20;
+    private int currentHunger = 10;
     private double digestion = 0;
     private double passiveHealing = 0;
 
@@ -34,9 +34,9 @@ public class Player extends Entity {
         for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
             hotbar[i] = new InventorySlot(null, 0);
         }
-        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, true));
-        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, true));
-        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, true));
+        hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
+        hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
+        hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
     }
 
     public int getMaxHealth() {
@@ -98,6 +98,10 @@ public class Player extends Entity {
         return maxHunger;
     }
 
+    public boolean isFull() {
+        return currentHunger == maxHunger;
+    }
+
     public void incDigestion(double amount) {
         digestion += amount;
 
@@ -125,6 +129,9 @@ public class Player extends Entity {
     public void update() {
         if(isMoving) {
             move();
+        }
+        if(isEating) {
+            eat();
         }
         checkPassiveHealing();
     }
@@ -179,6 +186,24 @@ public class Player extends Entity {
             }
         } else { // Passive healing ends, so reset it
             passiveHealing = 0;
+        }
+    }
+
+    private void consume(Consumable item) {
+        int newHunger = currentHunger + item.getHunger();
+
+        currentHunger = Math.min(newHunger, maxHunger);
+    }
+
+    private void eat() {
+        eatCounter++;
+
+        if(eatCounter == EAT_TIME) {
+            eatCounter = 0;
+            setIsEating(false);
+
+            consume((Consumable)getHeldItem());
+            hotbar[hotbarSelection].remove();
         }
     }
 }

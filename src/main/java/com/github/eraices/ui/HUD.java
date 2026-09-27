@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Icon;
-import com.github.eraices.core.Item;
 import com.github.eraices.entities.InventorySlot;
+import com.github.eraices.items.Item;
 
 public class HUD {
     // These are all relating to the hotbar's size/position

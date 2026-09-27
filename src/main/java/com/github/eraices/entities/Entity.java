@@ -13,6 +13,7 @@ public class Entity {
     }
 
     public static final int NUM_I_FRAMES = 30;
+    public static final int EAT_TIME = (int)(GamePanel.FPS * 1.5);
     
     protected Direction direction = Direction.DOWN;
     protected Direction movingDirection = Direction.DOWN;
@@ -31,7 +32,6 @@ public class Entity {
     protected boolean isMoving = false;
     protected boolean isSprinting = false;
     protected boolean isEating = false;
-    protected int eatNum;
     protected int eatCounter;
     protected int maxHealth;
     protected int currentHealth;
@@ -147,6 +147,7 @@ public class Entity {
             speed /= 2;
         } else {                    // Going from eating to not eating; double speed
             speed *= 2;
+            eatCounter = 0;
         }
         this.isEating = isEating;
     }

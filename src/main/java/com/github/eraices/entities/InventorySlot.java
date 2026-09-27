@@ -1,6 +1,6 @@
 package com.github.eraices.entities;
 
-import com.github.eraices.core.Item;
+import com.github.eraices.items.Item;
 
 public class InventorySlot {
     private Item item;

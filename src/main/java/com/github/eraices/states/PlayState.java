@@ -3,10 +3,11 @@ package com.github.eraices.states;
 import java.awt.Graphics2D;
 
 import com.github.eraices.core.GamePanel;
-import com.github.eraices.core.Item;
 import com.github.eraices.core.Key;
 import com.github.eraices.core.KeyHandler;
 import com.github.eraices.entities.Entity.Direction;
+import com.github.eraices.items.Consumable;
+import com.github.eraices.items.Item;
 
 public class PlayState implements GameState {
     private GamePanel gp;
@@ -129,7 +130,8 @@ public class PlayState implements GameState {
         if(gp.keyH.isPressed(KeyHandler.USE)) {             // Use item
             Item item = gp.player.getHeldItem();
 
-            if((item != null) && (item.isConsumable())) {
+            if((item != null) && (item instanceof Consumable)
+                && (!gp.player.isFull())) {
                 gp.player.setIsEating(true);
             }
         } else {                                            // Stop using item

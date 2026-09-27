@@ -1,16 +1,14 @@
-package com.github.eraices.core;
+package com.github.eraices.items;
 
 public class Item {
     private String name;
     private int iconID;
     private int maxStackSize;
-    private boolean consumable;
 
-    public Item(String name, int iconID, int maxStackSize, boolean consumable) {
+    public Item(String name, int iconID, int maxStackSize) {
         this.name = name;
         this.iconID = iconID;
         this.maxStackSize = maxStackSize;
-        this.consumable = consumable;
     }
 
     public String getName() {
@@ -23,10 +21,6 @@ public class Item {
 
     public int getMaxStackSize() {
         return maxStackSize;
-    }
-
-    public boolean isConsumable() {
-        return consumable;
     }
 
     public boolean equals(Item otherItem) {
