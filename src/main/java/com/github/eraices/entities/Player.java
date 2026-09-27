@@ -7,7 +7,6 @@ import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Icon;
 import com.github.eraices.core.Item;
-import com.github.eraices.entities.Entity.Direction;
 
 public class Player extends Entity {
     private static final double DIGESTION_THRESHOLD = 10;
@@ -35,9 +34,9 @@ public class Player extends Entity {
         for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
             hotbar[i] = new InventorySlot(null, 0);
         }
-        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, false));
-        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, false));
-        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, false));
+        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, true));
+        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, true));
+        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, true));
     }
 
     public int getMaxHealth() {
@@ -58,6 +57,10 @@ public class Player extends Entity {
 
     public InventorySlot getHotbarSlot(int slot) {
         return hotbar[slot];
+    }
+
+    public Item getHeldItem() {
+        return hotbar[hotbarSelection].getItem();
     }
 
     public int getItemX() {
@@ -82,7 +85,7 @@ public class Player extends Entity {
 
     public int getItemY() {
         return switch(spriteNum) {
-            case 1 , 3 -> getScreenY() + (6 * gp.scale);
+            case 1, 3 -> getScreenY() + (6 * gp.scale);
             default -> getScreenY() + (7 * gp.scale);
         };
     }
@@ -142,11 +145,11 @@ public class Player extends Entity {
 
         // If holding an item, draw the item too
         if(hotbar[hotbarSelection].getItem() != null) {
-            BufferedImage item = gp.iManager.getIcon(hotbar[hotbarSelection].getItem().getItemID());
+            BufferedImage item = gp.iManager.getIcon(hotbar[hotbarSelection].getItem().getIconID());
             int itemX = getItemX();
             int itemY = getItemY();
 
-            // If player is look up, draw item then player,
+            // If player is looking up, draw item then player,
             // else draw player then item
             if(isFacingUp()) {
                 g2.drawImage(item, itemX, itemY, null);
@@ -161,7 +164,7 @@ public class Player extends Entity {
     }
 
     private void checkPassiveHealing() {
-        // Accumulating passive healing if alive, not at full health, and more than 9 hunger
+        // Accumulate passive healing if alive, not at full health, and more than 9 hunger
         if((currentHealth > 0) && (currentHealth < maxHealth) && (currentHunger >= maxHunger - 2)) {
 
             passiveHealing += 0.25;

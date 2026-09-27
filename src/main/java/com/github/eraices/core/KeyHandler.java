@@ -41,7 +41,7 @@ public class KeyHandler implements KeyListener {
         }
 
         // Handle input in the proper game state
-        gp.gsm.getCurrentGameState().handleInput(e.getKeyCode());
+        gp.gsm.getCurrentGameState().handleInputPress(e.getKeyCode());
     }
 
     @Override public void keyReleased(KeyEvent e) {
@@ -59,7 +59,7 @@ public class KeyHandler implements KeyListener {
         }
 
         // Handle input in the proper game state
-        gp.gsm.getCurrentGameState().handleInput(e.getKeyCode());
+        gp.gsm.getCurrentGameState().handleInputRelease(e.getKeyCode());
     }
 
     public boolean isPressed(int key) {

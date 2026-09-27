@@ -12,9 +12,15 @@ public class InventoryState implements GameState {
     }
     
     @Override
-    public void handleInput(int keyCode) {
+    public void handleInputPress(int keyCode) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'handleInput'");
+    }
+
+    @Override
+    public void handleInputRelease(int keyCode) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'handleInputRelease'");
     }
 
     @Override

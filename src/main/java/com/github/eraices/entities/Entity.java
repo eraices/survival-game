@@ -30,6 +30,9 @@ public class Entity {
     protected int height;
     protected boolean isMoving = false;
     protected boolean isSprinting = false;
+    protected boolean isEating = false;
+    protected int eatNum;
+    protected int eatCounter;
     protected int maxHealth;
     protected int currentHealth;
     protected boolean isInvincible = false;
@@ -117,13 +120,35 @@ public class Entity {
         return isSprinting;
     }
 
-    public void toggleSprint() {
-        if(isSprinting) {
+    public void setIsSprinting(boolean isSprinting) {
+        // If setting it to the same value, do nothing
+        if(this.isSprinting == isSprinting) {
+            return;
+        } else if(isSprinting) {    // Going from walking to sprinting; double speed
+            speed *= 2;
+        } else {                    // Going from sprinting to walking; halve speed
             speed /= 2;
-        } else {
+        }
+        this.isSprinting = isSprinting;
+    }
+
+    public boolean isEating() {
+        return isEating;
+    }
+
+    public void setIsEating(boolean isEating) {
+        // If setting it to the same value, do nothing
+        if(this.isEating == isEating) {
+            return;
+        } else if(isEating) {       // Going from not eating to eating; halve speed
+            if(isSprinting) {       // Stop sprinting, if sprinting
+                setIsSprinting(false);
+            }
+            speed /= 2;
+        } else {                    // Going from eating to not eating; double speed
             speed *= 2;
         }
-        isSprinting = !isSprinting;
+        this.isEating = isEating;
     }
 
     public void setSprite() {

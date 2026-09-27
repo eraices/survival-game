@@ -84,7 +84,7 @@ public class HUD {
             Item item = hotbarSlot.getItem();
 
             if(item != null) {
-                BufferedImage icon = gp.iManager.getIcon(item.getItemID());
+                BufferedImage icon = gp.iManager.getIcon(item.getIconID());
                 int iconWidth = icon.getWidth();
                 int iconHeight = icon.getHeight();
                 int iconX = ui.getXForCenteredSubBox(slotX, slotWidth, iconWidth);

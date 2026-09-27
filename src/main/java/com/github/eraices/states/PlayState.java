@@ -3,6 +3,7 @@ package com.github.eraices.states;
 import java.awt.Graphics2D;
 
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.core.Item;
 import com.github.eraices.core.Key;
 import com.github.eraices.core.KeyHandler;
 import com.github.eraices.entities.Entity.Direction;
@@ -15,13 +16,18 @@ public class PlayState implements GameState {
     }
 
     @Override
-    public void handleInput(int keyCode) {
+    public void handleInputPress(int keyCode) {
         checkHotbarKeys(keyCode);
+        checkPlayerUse();
+        checkPlayerSprint();
         checkPlayerMovement();
-        if((gp.keyH.isPressed(KeyHandler.SPRINT) && !gp.player.isSprinting())
-            || (!gp.keyH.isPressed(KeyHandler.SPRINT) && gp.player.isSprinting())) {
-            gp.player.toggleSprint();
-        }
+    }
+
+    @Override
+    public void handleInputRelease(int keyCode) {
+        checkPlayerUse();
+        checkPlayerSprint();
+        checkPlayerMovement();
     }
 
     @Override
@@ -102,6 +108,32 @@ public class PlayState implements GameState {
             gp.player.setDirection(Direction.RIGHT);
             gp.player.setMovingDirection(Direction.RIGHT);
             gp.player.setIsMoving(true);
+        }
+    }
+
+    private void checkPlayerSprint() {
+        if(gp.keyH.isPressed(KeyHandler.SPRINT)) {              // Sprint key pressed; try to sprint
+            if ((!gp.player.isSprinting())
+                && (!gp.player.isEating())) {
+                    gp.player.setIsSprinting(true);
+            }
+        } else if((!gp.keyH.isPressed(KeyHandler.SPRINT))
+                  && (gp.player.isSprinting())) {               // Sprint key not pressed; stop sprinting
+            gp.player.setIsSprinting(false);
+        } else {                                                // Probably unnecessary, but here
+            gp.player.setIsSprinting(false);       // to avoid any problems
+        }
+    }
+
+    private void checkPlayerUse() {
+        if(gp.keyH.isPressed(KeyHandler.USE)) {             // Use item
+            Item item = gp.player.getHeldItem();
+
+            if((item != null) && (item.isConsumable())) {
+                gp.player.setIsEating(true);
+            }
+        } else {                                            // Stop using item
+            gp.player.setIsEating(false);
         }
     }
 }

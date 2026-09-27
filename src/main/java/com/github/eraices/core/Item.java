@@ -1,17 +1,14 @@
 package com.github.eraices.core;
 
-import java.awt.image.BufferedImage;
-
 public class Item {
     private String name;
-    private int itemID;
+    private int iconID;
     private int maxStackSize;
     private boolean consumable;
-    private BufferedImage icon;
 
-    public Item(String name, int itemID, int maxStackSize, boolean consumable) {
+    public Item(String name, int iconID, int maxStackSize, boolean consumable) {
         this.name = name;
-        this.itemID = itemID;
+        this.iconID = iconID;
         this.maxStackSize = maxStackSize;
         this.consumable = consumable;
     }
@@ -20,8 +17,8 @@ public class Item {
         return name;
     }
 
-    public int getItemID() {
-        return itemID;
+    public int getIconID() {
+        return iconID;
     }
 
     public int getMaxStackSize() {
