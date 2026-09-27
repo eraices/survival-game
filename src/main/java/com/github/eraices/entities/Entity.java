@@ -92,6 +92,12 @@ public class Entity {
         return (this.direction == direction);
     }
 
+    public boolean isFacingUp() {
+        return (direction == Direction.UP) ||
+                (direction == Direction.UP_LEFT) ||
+                (direction == Direction.UP_RIGHT);
+    }
+
     public boolean isMoving() {
         return isMoving;
     }

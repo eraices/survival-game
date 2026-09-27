@@ -38,15 +38,15 @@ public class PlayState implements GameState {
 
     private void checkHotbarKeys(int keyCode) {
         switch(keyCode) {
-            case Key._1 -> gp.player.setHotbarSelection(1);
-            case Key._2 -> gp.player.setHotbarSelection(2);
-            case Key._3 -> gp.player.setHotbarSelection(3);
-            case Key._4 -> gp.player.setHotbarSelection(4);
-            case Key._5 -> gp.player.setHotbarSelection(5);
-            case Key._6 -> gp.player.setHotbarSelection(6);
-            case Key._7 -> gp.player.setHotbarSelection(7);
-            case Key._8 -> gp.player.setHotbarSelection(8);
-            case Key._9 -> gp.player.setHotbarSelection(9);
+            case Key._1 -> gp.player.setHotbarSelection(0);
+            case Key._2 -> gp.player.setHotbarSelection(1);
+            case Key._3 -> gp.player.setHotbarSelection(2);
+            case Key._4 -> gp.player.setHotbarSelection(3);
+            case Key._5 -> gp.player.setHotbarSelection(4);
+            case Key._6 -> gp.player.setHotbarSelection(5);
+            case Key._7 -> gp.player.setHotbarSelection(6);
+            case Key._8 -> gp.player.setHotbarSelection(7);
+            case Key._9 -> gp.player.setHotbarSelection(8);
         }
     }
     

@@ -1,10 +1,13 @@
 package com.github.eraices.entities;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.core.Icon;
 import com.github.eraices.core.Item;
+import com.github.eraices.entities.Entity.Direction;
 
 public class Player extends Entity {
     private static final double DIGESTION_THRESHOLD = 10;
@@ -32,9 +35,9 @@ public class Player extends Entity {
         for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
             hotbar[i] = new InventorySlot(null, 0);
         }
-        hotbar[4].add(new Item("Bread", 64, false));
-        hotbar[4].add(new Item("Bread", 64, false));
-        hotbar[4].add(new Item("Bread", 64, false));
+        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, false));
+        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, false));
+        hotbar[4].add(new Item("Bread", Icon.BREAD, 64, false));
     }
 
     public int getMaxHealth() {
@@ -55,6 +58,33 @@ public class Player extends Entity {
 
     public InventorySlot getHotbarSlot(int slot) {
         return hotbar[slot];
+    }
+
+    public int getItemX() {
+        return switch(direction) {
+            case Direction.UP -> getScreenX() + (8 * gp.scale);
+            case Direction.DOWN -> getScreenX();
+            case Direction.LEFT -> 
+                switch(spriteNum) {
+                    case 1 -> getScreenX();
+                    case 3 -> getScreenX() + (8 * gp.scale);
+                    default -> getScreenX() + (4 * gp.scale);
+                };
+            case Direction.RIGHT -> 
+                switch(spriteNum) {
+                    case 1 -> getScreenX() + (8 * gp.scale);
+                    case 3 -> getScreenX();
+                    default -> getScreenX() + (4 * gp.scale);
+                };
+            default -> getScreenX();
+        };
+    }
+
+    public int getItemY() {
+        return switch(spriteNum) {
+            case 1 , 3 -> getScreenY() + (6 * gp.scale);
+            default -> getScreenY() + (7 * gp.scale);
+        };
     }
 
     public int getCurrentHunger() {
@@ -110,7 +140,24 @@ public class Player extends Entity {
         int screenX = (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (gp.tileSize / 2);
         int screenY = (GameEngine.VIRTUAL_SCREEN_HEIGHT / 2) - (gp.tileSize / 2);
 
-        g2.drawImage(sprite, screenX, screenY, null);
+        // If holding an item, draw the item too
+        if(hotbar[hotbarSelection].getItem() != null) {
+            BufferedImage item = gp.iManager.getIcon(hotbar[hotbarSelection].getItem().getItemID());
+            int itemX = getItemX();
+            int itemY = getItemY();
+
+            // If player is look up, draw item then player,
+            // else draw player then item
+            if(isFacingUp()) {
+                g2.drawImage(item, itemX, itemY, null);
+                g2.drawImage(sprite, screenX, screenY, null);
+            } else {
+                g2.drawImage(sprite, screenX, screenY, null);
+                g2.drawImage(item, itemX, itemY, null);
+            }
+        } else { // No item, so just draw player
+            g2.drawImage(sprite, screenX, screenY, null);
+        }
     }
 
     private void checkPassiveHealing() {

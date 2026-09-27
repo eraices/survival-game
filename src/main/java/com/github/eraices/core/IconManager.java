@@ -15,13 +15,6 @@ public class IconManager {
         return icons[icon];
     }
 
-    public BufferedImage getIcon(String name) {
-        return switch(name) {
-            case "Bread" -> icons[Icon.BREAD];
-            default -> null;
-        };
-    }
-
     private void initIcons() {
         // Calculate parameters for AssetHandler
         int frameWidth = gp.ogTileSize / 2;     // Dividing these by 2 because icons are

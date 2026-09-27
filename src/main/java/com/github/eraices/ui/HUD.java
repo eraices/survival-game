@@ -78,13 +78,13 @@ public class HUD {
         for(int slot = 0; slot < NUM_HOTBAR_SLOTS; slot++) {
             slotX = ui.getXForCenteredSubBox(fakeHotbarX + (splitWidth * slot), splitWidth, slotWidth);
 
-            ui.drawBox(slotX, slotY, slotWidth, slotHeight, gp.player.getHotbarSelection() == (slot + 1), false);
+            ui.drawBox(slotX, slotY, slotWidth, slotHeight, gp.player.getHotbarSelection() == (slot), false);
 
             InventorySlot hotbarSlot = gp.player.getHotbarSlot(slot);
             Item item = hotbarSlot.getItem();
 
             if(item != null) {
-                BufferedImage icon = gp.iManager.getIcon(item.getName());
+                BufferedImage icon = gp.iManager.getIcon(item.getItemID());
                 int iconWidth = icon.getWidth();
                 int iconHeight = icon.getHeight();
                 int iconX = ui.getXForCenteredSubBox(slotX, slotWidth, iconWidth);
