@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.core.RNG;
 
 public class Particle extends Entity {
     private static final Color DEFAULT_COLOR = new Color(16, 20, 31); // Black
@@ -18,7 +19,7 @@ public class Particle extends Entity {
 
     public Particle(GamePanel gp, int worldX, int worldY, int speed, BufferedImage icon) {
         super(gp, worldX, worldY, speed);
-        currentHealth = (int)(Math.random() * (MAX_HEALTH - MIN_HEALTH + 1)) + MIN_HEALTH;
+        currentHealth = RNG.randomInt(MIN_HEALTH, MAX_HEALTH);
         color = pickColorFrom(icon);
         gp.addEntity(this);
     }

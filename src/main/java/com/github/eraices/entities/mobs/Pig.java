@@ -1,6 +1,5 @@
 package com.github.eraices.entities.mobs;
 
-import com.github.eraices.core.AssetHandler;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.entities.PassiveMob;
 
@@ -15,6 +14,6 @@ public class Pig extends PassiveMob {
     
     @Override
     public void giveDrops() {
-        
+
     }
 }
