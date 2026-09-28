@@ -9,9 +9,10 @@ import com.github.eraices.core.Icon;
 import com.github.eraices.items.*;
 
 public class Player extends Entity {
+    private static final int NUM_HOTBAR_SLOTS = 9;
+    private static final int FOOD_PARTICLE_FREQUENCY = 5;
     private static final double DIGESTION_THRESHOLD = 10;
     private static final double PASSIVE_HEALING_THRESHOLD = 10;
-    private static final int NUM_HOTBAR_SLOTS = 9;
 
     private InventorySlot[] hotbar = new InventorySlot[NUM_HOTBAR_SLOTS];
     private int hotbarSelection = 1;
@@ -117,10 +118,12 @@ public class Player extends Entity {
         }
     }
 
+    @Override
     public int getScreenX() {
         return (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (gp.tileSize / 2);
     }
 
+    @Override
     public int getScreenY() {
         return (GameEngine.VIRTUAL_SCREEN_HEIGHT / 2) - (gp.tileSize / 2);
     }
@@ -196,14 +199,23 @@ public class Player extends Entity {
     }
 
     private void eat() {
+        Item item = getHeldItem();
+        BufferedImage icon = gp.iManager.getIcon(item.getIconID());
+
         eatCounter++;
 
-        if(eatCounter == EAT_TIME) {
-            eatCounter = 0;
-            setIsEating(false);
+        // Every few frames, spawn a food particle
+        if(eatCounter % FOOD_PARTICLE_FREQUENCY == 0) {
+            int particleSpeed = (int)(Math.random() * 3) - 1;
+            new Particle(gp, getItemX(), getItemY(), particleSpeed, icon);
+        }
 
-            consume((Consumable)getHeldItem());
+        // Consume the item after eating
+        if(eatCounter >= EAT_TIME) {
+            consume((Consumable)item);
             hotbar[hotbarSelection].remove();
+
+            setIsEating(false);
         }
     }
 }

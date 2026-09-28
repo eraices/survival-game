@@ -7,12 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.eraices.core.GameStateManager.State;
+import com.github.eraices.entities.Entity;
 import com.github.eraices.entities.Player;
 import com.github.eraices.ui.UI;
 import com.github.eraices.world.WorldManager;
@@ -28,6 +30,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
 	public Player player = new Player(this, 0, 0, 2);
+	public ArrayList<Entity> entityList = new ArrayList<>();
+	public ArrayList<Entity> entityAddList = new ArrayList<>();
+	public ArrayList<Entity> entityRemoveList = new ArrayList<>();
 	public WorldManager world = new WorldManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public IconManager iManager = new IconManager(this);
@@ -58,6 +63,9 @@ public class GamePanel extends JPanel implements Runnable {
 		// Add KeyHandler
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+
+		// Add player to entityList
+		entityList.add(player);
 
 		// Set starting game state
 		gsm.setCurrGameState(State.PLAY);
@@ -106,7 +114,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void update() {
 		gsm.getCurrentGameState().update();
-
 	}
 
 	public void paintComponent(Graphics g) {
@@ -131,6 +138,25 @@ public class GamePanel extends JPanel implements Runnable {
 
 		g2.dispose(); // Clear up graphics resources efficiently
     }
+
+	public void addEntity(Entity e) {
+		entityAddList.add(e);
+	}
+
+	public void removeEntity(Entity e) {
+		entityRemoveList.add(e);
+	}
+
+	public void refreshEntityList() {
+		if(!entityRemoveList.isEmpty()) {			// Remove entities that need to be removed
+			entityList.removeAll(entityRemoveList);
+			entityRemoveList.clear();
+		}
+		if(!entityAddList.isEmpty()) {				// Add entities tht need to be added
+			entityList.addAll(entityAddList);
+			entityAddList.clear();
+		}
+	}
 
 	public void toggleFullscreen() {
 		// Get hardware graphics

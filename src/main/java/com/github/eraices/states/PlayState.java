@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Key;
 import com.github.eraices.core.KeyHandler;
+import com.github.eraices.entities.Entity;
 import com.github.eraices.entities.Entity.Direction;
 import com.github.eraices.items.Consumable;
 import com.github.eraices.items.Item;
@@ -33,13 +34,18 @@ public class PlayState implements GameState {
 
     @Override
     public void update() {
-        gp.player.update();
+        for(Entity e: gp.entityList) {
+            e.update();
+        }
+        gp.refreshEntityList();
     }
 
     @Override
     public void draw(Graphics2D g2) {
         gp.world.draw(g2);
-        gp.player.draw(g2);
+        for(Entity e: gp.entityList) {
+            e.draw(g2);
+        }
         gp.ui.drawHUD();
     }
 

@@ -61,6 +61,14 @@ public class Entity {
         return worldY / gp.tileSize;
     }
 
+    public int getScreenX() {
+        return worldX - gp.player.worldX + gp.player.getScreenX();
+    }
+
+    public int getScreenY() {
+        return worldY - gp.player.worldY + gp.player.getScreenY();
+    }
+
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
