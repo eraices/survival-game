@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.github.eraices.core.GameStateManager.State;
-import com.github.eraices.entities.Entity;
-import com.github.eraices.entities.Player;
+import com.github.eraices.entities.*;
+import com.github.eraices.entities.mobs.*;
 import com.github.eraices.ui.UI;
 import com.github.eraices.world.WorldManager;
 
@@ -30,15 +30,16 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
 	public Player player = new Player(this, 0, 0, 2);
+	public Entity pig = new Pig(this, tileSize, tileSize, 0);
 	public ArrayList<Entity> entityList = new ArrayList<>();
-	public ArrayList<Entity> entityAddList = new ArrayList<>();
-	public ArrayList<Entity> entityRemoveList = new ArrayList<>();
 	public WorldManager world = new WorldManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public IconManager iManager = new IconManager(this);
 
 
     private Thread gameThread;
+	private ArrayList<Entity> entityAddList = new ArrayList<>();
+	private ArrayList<Entity> entityRemoveList = new ArrayList<>();
 
 	// Fullscreen variables
 	private boolean isFullscreen = false;
@@ -66,6 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		// Add player to entityList
 		entityList.add(player);
+		addEntity(pig);
 
 		// Set starting game state
 		gsm.setCurrGameState(State.PLAY);

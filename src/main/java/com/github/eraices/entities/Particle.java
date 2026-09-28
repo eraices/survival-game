@@ -76,9 +76,4 @@ public class Particle extends Entity {
         worldX += speed;
         worldY += speed + gravity;
     }
-
-    @Override
-    public void die() {
-        gp.removeEntity(this);
-    }
 }

@@ -181,7 +181,7 @@ public class Entity {
     }
 
     public void draw(Graphics2D g2) {
-        // TODO: Implement draw logic for non-player entities
+        g2.drawImage(sprite, getScreenX(), getScreenY(), null);
     }
 
 	public void changeFrame() {
@@ -309,8 +309,7 @@ public class Entity {
     }
 
     public void die() {
-        // TODO: Proplerly implement death
-        speed = 0;
+        gp.removeEntity(this);
     }
 
     public void heal(int amount) {
