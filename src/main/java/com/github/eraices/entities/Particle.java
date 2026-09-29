@@ -17,8 +17,9 @@ public class Particle extends Entity {
     private int gravity = 0;
     private int gravityCounter = 0;
 
-    public Particle(GamePanel gp, int worldX, int worldY, int speed, BufferedImage icon) {
-        super(gp, worldX, worldY, speed);
+    public Particle(GamePanel gp, int worldX, int worldY, BufferedImage icon) {
+        super(gp, worldX, worldY);
+        speed = RNG.randomInt(-1, 1);
         currentHealth = RNG.randomInt(MIN_HEALTH, MAX_HEALTH);
         color = pickColorFrom(icon);
         gp.addEntity(this);

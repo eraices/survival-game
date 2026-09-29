@@ -29,8 +29,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public GameStateManager gsm = new GameStateManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
-	public Player player = new Player(this, 0, 0, 2);
-	public Entity pig = new Pig(this, tileSize, tileSize, 0);
+	public Player player = new Player(this, 0, 0);
+	public Entity pig = new Pig(this, tileSize, tileSize);
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	public WorldManager world = new WorldManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);

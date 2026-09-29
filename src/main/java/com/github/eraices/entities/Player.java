@@ -10,6 +10,7 @@ import com.github.eraices.items.*;
 
 public class Player extends Entity {
     private static final int NUM_HOTBAR_SLOTS = 9;
+    private static final int PLAYER_SPEED = 2;
     private static final int FOOD_PARTICLE_FREQUENCY = 5;
     private static final double DIGESTION_THRESHOLD = 10;
     private static final double PASSIVE_HEALING_THRESHOLD = 10;
@@ -21,8 +22,9 @@ public class Player extends Entity {
     private double digestion = 0;
     private double passiveHealing = 0;
 
-    public Player(GamePanel gp, int worldX, int worldY, int speed) {
-        super(gp, worldX, worldY, speed);
+    public Player(GamePanel gp, int worldX, int worldY) {
+        super(gp, worldX, worldY);
+        speed = PLAYER_SPEED;
         width = gp.tileSize;
         height = gp.tileSize;
         initHurtbox(width, height);
@@ -206,8 +208,7 @@ public class Player extends Entity {
 
         // Every few frames, spawn a food particle
         if(eatCounter % FOOD_PARTICLE_FREQUENCY == 0) {
-            int particleSpeed = (int)(Math.random() * 3) - 1;
-            new Particle(gp, getItemX(), getItemY(), particleSpeed, icon);
+            new Particle(gp, getItemX(), getItemY(), icon);
         }
 
         // Consume the item after eating

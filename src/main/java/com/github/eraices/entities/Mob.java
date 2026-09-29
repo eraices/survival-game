@@ -4,8 +4,8 @@ import com.github.eraices.core.GamePanel;
 
 public class Mob extends Entity {
 
-    public Mob(GamePanel gp, int worldX, int worldY, int speed) {
-        super(gp, worldX, worldY, speed);
+    public Mob(GamePanel gp, int worldX, int worldY) {
+        super(gp, worldX, worldY);
     }
 
     @Override

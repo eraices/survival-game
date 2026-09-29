@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import com.github.eraices.core.AssetHandler;
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.world.Chunk;
 
 public class Entity {
     public enum Direction {
@@ -21,6 +22,7 @@ public class Entity {
     protected BufferedImage[][] spriteSheet;
     protected BufferedImage sprite;
     protected Rectangle hurtbox;
+    protected Chunk currentChunk;
     protected int spriteNum;
     protected int spriteCounter = 0;
     protected int frameLength;
@@ -38,11 +40,10 @@ public class Entity {
     protected boolean isInvincible = false;
     protected int iFrameCounter = 0;
 
-    public Entity(GamePanel gp, int worldX, int worldY, int speed) {
+    public Entity(GamePanel gp, int worldX, int worldY) {
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
-        this.speed = speed;
     }
 
     public int getWorldX() {
