@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.github.eraices.core.AssetHandler;
+import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.world.Chunk;
 
@@ -44,6 +45,8 @@ public class Entity {
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
+        updateCurrentChunk();
+        currentChunk.addEntity(this);
     }
 
     public int getWorldX() {
@@ -68,6 +71,14 @@ public class Entity {
 
     public int getScreenY() {
         return worldY - gp.player.worldY + gp.player.getScreenY();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void setDirection(Direction direction) {
@@ -98,6 +109,24 @@ public class Entity {
         int newWorldY = worldY + gp.scale;
 
         hurtbox.setLocation(newWorldX, newWorldY);
+    }
+
+    public Chunk getCurrentChunk() {
+        return currentChunk;
+    }
+
+    public void updateCurrentChunk() {
+        int chunkPixelSize = Chunk.CHUNK_SIZE * gp.tileSize;
+        int newChunkX = (int) Math.floor((double) worldX / chunkPixelSize);
+        int newChunkY = (int) Math.floor((double) worldY / chunkPixelSize);
+
+        if(currentChunk == null) {
+            currentChunk = gp.world.getChunk(newChunkX, newChunkY);
+        } else if((newChunkX != currentChunk.chunkX) || (newChunkY != currentChunk.chunkY)) {
+            currentChunk.removeEntity(this);
+            currentChunk = gp.world.getChunk(newChunkX, newChunkY);
+            currentChunk.addEntity(this);
+        }
     }
 
     public boolean isFacing(Direction direction) {
@@ -259,6 +288,7 @@ public class Entity {
             worldY = nudgeVertically(newWorldY, worldY);
         }
 
+        updateCurrentChunk();
         setHurtboxLocationToSelf();
         checkSprite();
     }
@@ -310,7 +340,7 @@ public class Entity {
     }
 
     public void die() {
-        gp.removeEntity(this);
+        currentChunk.removeEntity(this);
     }
 
     public void heal(int amount) {

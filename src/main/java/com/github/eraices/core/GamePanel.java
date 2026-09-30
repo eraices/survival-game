@@ -26,20 +26,17 @@ public class GamePanel extends JPanel implements Runnable {
 	public int ogTileSize = 16;
 	public int scale = 2;
 	public int tileSize = ogTileSize * scale;
+	public WorldManager world = new WorldManager(this);
 	public GameStateManager gsm = new GameStateManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
 	public Player player = new Player(this, 0, 0);
 	public Entity pig = new Pig(this, tileSize, tileSize);
-	public ArrayList<Entity> entityList = new ArrayList<>();
-	public WorldManager world = new WorldManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public IconManager iManager = new IconManager(this);
 
 
     private Thread gameThread;
-	private ArrayList<Entity> entityAddList = new ArrayList<>();
-	private ArrayList<Entity> entityRemoveList = new ArrayList<>();
 
 	// Fullscreen variables
 	private boolean isFullscreen = false;
@@ -64,10 +61,6 @@ public class GamePanel extends JPanel implements Runnable {
 		// Add KeyHandler
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
-
-		// Add player to entityList
-		entityList.add(player);
-		addEntity(pig);
 
 		// Set starting game state
 		gsm.setCurrGameState(State.PLAY);
@@ -140,25 +133,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 		g2.dispose(); // Clear up graphics resources efficiently
     }
-
-	public void addEntity(Entity e) {
-		entityAddList.add(e);
-	}
-
-	public void removeEntity(Entity e) {
-		entityRemoveList.add(e);
-	}
-
-	public void refreshEntityList() {
-		if(!entityRemoveList.isEmpty()) {			// Remove entities that need to be removed
-			entityList.removeAll(entityRemoveList);
-			entityRemoveList.clear();
-		}
-		if(!entityAddList.isEmpty()) {				// Add entities tht need to be added
-			entityList.addAll(entityAddList);
-			entityAddList.clear();
-		}
-	}
 
 	public void toggleFullscreen() {
 		// Get hardware graphics

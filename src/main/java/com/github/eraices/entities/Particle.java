@@ -22,7 +22,6 @@ public class Particle extends Entity {
         speed = RNG.randomInt(-1, 1);
         currentHealth = RNG.randomInt(MIN_HEALTH, MAX_HEALTH);
         color = pickColorFrom(icon);
-        gp.addEntity(this);
     }
 
     public Color pickColorFrom(BufferedImage icon) {
@@ -70,7 +69,7 @@ public class Particle extends Entity {
     @Override
     public void draw(Graphics2D g2) {
         g2.setColor(color);
-        g2.fillRect(worldX, worldY, gp.scale, gp.scale);
+        g2.fillRect(getScreenX(), getScreenY(), gp.scale, gp.scale);
     }
 
     @Override

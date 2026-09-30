@@ -2,18 +2,27 @@ package com.github.eraices.world;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import com.github.eraices.core.AssetHandler;
+import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.entities.Entity;
 
 public class WorldManager {
     public static final long LARGE_PRIME_A = 479001599L;
     public static final long LARGE_PRIME_B = 87178291199L;
-    private Map<String, Chunk> loadedChunks = new HashMap<>(); // Holds already-generated chunks
-    
+
+    // Number of pixels in a chunk
+    private final int chunkPixelSize;
+
+    private Map<String, Chunk> generatedChunks = new HashMap<>();   // Holds already-generated chunks
+    private ArrayList<Chunk> loadedChunks = new ArrayList<>();      // Holds currently-loaded chunks
+    private ArrayList<Entity> masterEntityList = new ArrayList<>(); // Holds all loaded chunks' entities
     private GamePanel gp;
     private BufferedImage[] blockTextures = new BufferedImage[BlockID.NUM_BLOCKS];
     private long seed = 1654861354861351L;
@@ -21,6 +30,7 @@ public class WorldManager {
 
     public WorldManager(GamePanel gp) {
         this.gp = gp;
+        chunkPixelSize = Chunk.CHUNK_SIZE * gp.tileSize;
         seed = System.nanoTime();
         initBlockTextures();
     }
@@ -32,22 +42,23 @@ public class WorldManager {
     public Chunk getChunk(int chunkX, int chunkY) {
         String key = chunkX + "," + chunkY;
 
-        if(loadedChunks.containsKey(key)) {
-            return loadedChunks.get(key);
+        if(generatedChunks.containsKey(key)) {
+            return generatedChunks.get(key);
         }
 
         // Chunk doesn't exist yet; generate it
         Chunk newChunk = generateChunk(chunkX, chunkY);
-        loadedChunks.put(key, newChunk);
+        generatedChunks.put(key, newChunk);
 
         return newChunk;
     }
 
-    public void draw(Graphics2D g2) {
-        // Calculate how many pixels are in a whole chunk
-        int chunkPixelSize = Chunk.CHUNK_SIZE * gp.tileSize;
+    public void update() {
+        // Clear loaded chunks/entities for next update
+        loadedChunks.clear();
+        masterEntityList.clear();
 
-        // Calculate starting/ending chunk coordinates of chunks that will be drawn
+        // Calculate starting/ending chunk coordinates of chunks that will be updated
         int startChunkX = (int) Math.floor((double) (gp.player.getWorldX() - gp.player.getScreenX()) / chunkPixelSize);
         int endChunkX = (int) Math.floor((double) (gp.player.getWorldX() + gp.player.getScreenX()) / chunkPixelSize) + 1;
         int startChunkY = (int) Math.floor((double) (gp.player.getWorldY() - gp.player.getScreenY()) / chunkPixelSize);
@@ -55,35 +66,74 @@ public class WorldManager {
 
         Chunk chunk;
 
-        // Loop through each visible chunk
+        // Get all loaded chunks and entities
         for(int currChunkX = startChunkX; currChunkX <= endChunkX; currChunkX++) {
             for(int currChunkY = startChunkY; currChunkY <= endChunkY; currChunkY++) {
                 chunk = getChunk(currChunkX, currChunkY);
 
-                // Now loop through each block in this chunk
-                for(int localX = 0; localX < Chunk.CHUNK_SIZE; localX++) {
-                    for(int localY = 0; localY < Chunk.CHUNK_SIZE; localY++) {
+                // Add this chunk to list of loaded chunks
+                loadedChunks.add(chunk);
 
-                        // Determine which block this is
-                        int blockID  = chunk.getBlockAt(localX, localY);
+                // Add all entities in this chunk to master list
+                for(Entity e: chunk.entityList) {
+                    masterEntityList.add(e);
+                }
+            }
+        }
 
-                        // If it's air, skip drawing
-                        if(blockID == BlockID.AIR) {
-                            continue;
-                        }
+        // Update all loaded entities
+        for(Entity e: masterEntityList) {
+            e.update();
+        }
 
-                        // Convert local coordinates to world coordinates
-                        int worldX = (currChunkX * chunkPixelSize) + (localX * gp.tileSize);
-                        int worldY = (currChunkY * chunkPixelSize) + (localY * gp.tileSize);
+        // Refresh all chunks' entity lists
+        for(Chunk c: loadedChunks) {
+            c.refreshEntityList();
+        }
+    }
 
-                        // Convert world coordinates to screen coordinates
-                        int screenX = worldX - gp.player.getWorldX() + gp.player.getScreenX();
-                        int screenY = worldY - gp.player.getWorldY() + gp.player.getScreenY();
+    public void draw(Graphics2D g2) {
 
-                        // Draw this block
+        // Loop through each loaded chunk
+        for(Chunk chunk: loadedChunks) {
+            // Now loop through each block in this chunk
+            for(int localX = 0; localX < Chunk.CHUNK_SIZE; localX++) {
+                for(int localY = 0; localY < Chunk.CHUNK_SIZE; localY++) {
+                    // Determine which block this is
+                    int blockID  = chunk.getBlockAt(localX, localY);
+
+                    // If it's air, skip drawing
+                    if(blockID == BlockID.AIR) {
+                        continue;
+                    }
+
+                    // Convert local coordinates to world coordinates
+                    int worldX = (chunk.chunkX * chunkPixelSize) + (localX * gp.tileSize);
+                    int worldY = (chunk.chunkY * chunkPixelSize) + (localY * gp.tileSize);
+
+                    // Convert world coordinates to screen coordinates
+                    int screenX = worldX - gp.player.getWorldX() + gp.player.getScreenX();
+                    int screenY = worldY - gp.player.getWorldY() + gp.player.getScreenY();
+
+                    // Draw this block if on screen
+                    if(isOnScreen(screenX, screenY, gp.tileSize, gp.tileSize)) {
                         g2.drawImage(blockTextures[blockID], screenX, screenY, null);
                     }
                 }
+            }
+        }
+
+        // Sort entities by Y-coordinate for drawing.
+        // Ties are broken using X-coordinate
+        masterEntityList.sort(
+            Comparator.comparingInt(Entity::getWorldY)
+                      .thenComparingInt(Entity::getWorldX)
+        );
+
+        // Draw all loaded entities if on screen
+        for(Entity e: masterEntityList) {
+            if(isOnScreen(e.getScreenX(), e.getScreenY(), e.getWidth(), e.getHeight())) {
+                e.draw(g2);
             }
         }
     }
@@ -168,6 +218,11 @@ public class WorldManager {
         }
 
         return false; // This block is not inside a stone cluster
+    }
+
+    public boolean isOnScreen(int screenX, int screenY, int width, int height) {
+        return (screenX + width > 0) && (screenX < GameEngine.VIRTUAL_SCREEN_WIDTH)
+                && (screenY + height > 0) && (screenY < GameEngine.VIRTUAL_SCREEN_HEIGHT);
     }
 
     private void initBlockTextures() {

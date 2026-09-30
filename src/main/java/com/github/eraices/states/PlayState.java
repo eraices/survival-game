@@ -34,18 +34,12 @@ public class PlayState implements GameState {
 
     @Override
     public void update() {
-        for(Entity e: gp.entityList) {
-            e.update();
-        }
-        gp.refreshEntityList();
+        gp.world.update();
     }
 
     @Override
     public void draw(Graphics2D g2) {
         gp.world.draw(g2);
-        for(Entity e: gp.entityList) {
-            e.draw(g2);
-        }
         gp.ui.drawHUD();
     }
 

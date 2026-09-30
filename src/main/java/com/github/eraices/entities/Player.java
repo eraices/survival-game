@@ -208,7 +208,10 @@ public class Player extends Entity {
 
         // Every few frames, spawn a food particle
         if(eatCounter % FOOD_PARTICLE_FREQUENCY == 0) {
-            new Particle(gp, getItemX(), getItemY(), icon);
+            int particleWorldX = worldX + (getItemX() - getScreenX());
+            int particleWorldY = worldY + (getItemY() - getScreenY());
+            
+            new Particle(gp, particleWorldX, particleWorldY, icon);
         }
 
         // Consume the item after eating
