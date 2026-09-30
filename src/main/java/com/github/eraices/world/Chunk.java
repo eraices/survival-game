@@ -1,6 +1,5 @@
 package com.github.eraices.world;
 
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import com.github.eraices.entities.Entity;

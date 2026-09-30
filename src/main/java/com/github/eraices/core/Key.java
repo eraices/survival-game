@@ -20,6 +20,7 @@ public final class Key {
     public static final int P = KeyEvent.VK_P;
     public static final int O = KeyEvent.VK_O;
     public static final int I = KeyEvent.VK_I;
+    public static final int Q = KeyEvent.VK_Q;
     public static final int SPACE = KeyEvent.VK_SPACE;
     public static final int SHIFT = KeyEvent.VK_SHIFT;
     public static final int ALT = KeyEvent.VK_ALT;

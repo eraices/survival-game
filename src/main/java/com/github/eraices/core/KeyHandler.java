@@ -11,6 +11,7 @@ public class KeyHandler implements KeyListener {
     public static final int RIGHT = 3;
     public static final int SPRINT = 4;
     public static final int USE = 5;
+    public static final int DROP = 6;
     
     private GamePanel gp;
     private boolean[] pressed = new boolean[NUM_CONTROLS];
@@ -36,6 +37,7 @@ public class KeyHandler implements KeyListener {
             case Key.D -> press(RIGHT);
             case Key.O -> press(SPRINT);
             case Key.I -> press(USE);
+            case Key.Q -> press(DROP);
             case Key.F_11 -> gp.toggleFullscreen();
             default -> {} // Do nothing
         }
@@ -55,6 +57,7 @@ public class KeyHandler implements KeyListener {
             case Key.D -> release(RIGHT);
             case Key.O -> release(SPRINT);
             case Key.I -> release(USE);
+            case Key.Q -> release(DROP);
             default -> {} // Do nothing
         }
 
@@ -80,8 +83,8 @@ public class KeyHandler implements KeyListener {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
-        for(int i = UP; i <= RIGHT; i++) {
-            sb.append(pressed[i] + (i < RIGHT ? ", " : ""));
+        for(int i = UP; i < NUM_CONTROLS; i++) {
+            sb.append(pressed[i] + (i < NUM_CONTROLS ? ", " : ""));
         }
         sb.append("]");
         return sb.toString();

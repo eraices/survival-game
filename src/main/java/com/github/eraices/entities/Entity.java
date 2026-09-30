@@ -73,6 +73,14 @@ public class Entity {
         return worldY - gp.player.worldY + gp.player.getScreenY();
     }
 
+    public int getCenterX() {
+        return (worldX + width) - (width / 2);
+    }
+
+    public int getCenterY() {
+        return (worldY + height) - (height / 2);
+    }
+
     public int getWidth() {
         return width;
     }

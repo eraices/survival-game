@@ -21,6 +21,7 @@ public class PlayState implements GameState {
     public void handleInputPress(int keyCode) {
         checkHotbarKeys(keyCode);
         checkPlayerUse();
+        checkPlayerDrop();
         checkPlayerSprint();
         checkPlayerMovement();
     }
@@ -28,6 +29,7 @@ public class PlayState implements GameState {
     @Override
     public void handleInputRelease(int keyCode) {
         checkPlayerUse();
+        checkPlayerDrop();
         checkPlayerSprint();
         checkPlayerMovement();
     }
@@ -54,6 +56,18 @@ public class PlayState implements GameState {
             case Key._7 -> gp.player.setHotbarSelection(6);
             case Key._8 -> gp.player.setHotbarSelection(7);
             case Key._9 -> gp.player.setHotbarSelection(8);
+        }
+    }
+
+    private void checkPlayerDrop() {
+        // Player cannot drop item while eating,
+        // or if they already dropped an item during this key press
+        if(gp.keyH.isPressed(KeyHandler.DROP)
+            && !gp.player.isEating()
+            && !gp.player.didDropItem()) {
+            gp.player.dropItem();
+        } else if (!gp.keyH.isPressed(KeyHandler.DROP) && gp.player.didDropItem()) {
+            gp.player.setDidDropItem(false);
         }
     }
     

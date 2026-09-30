@@ -76,5 +76,7 @@ public class Particle extends Entity {
     public void move() {
         worldX += speed;
         worldY += speed + gravity;
+
+        updateCurrentChunk();
     }
 }

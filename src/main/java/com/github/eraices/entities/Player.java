@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Icon;
+import com.github.eraices.core.RNG;
 import com.github.eraices.items.*;
 
 public class Player extends Entity {
@@ -16,11 +17,13 @@ public class Player extends Entity {
     private static final double PASSIVE_HEALING_THRESHOLD = 10;
 
     private InventorySlot[] hotbar = new InventorySlot[NUM_HOTBAR_SLOTS];
-    private int hotbarSelection = 1;
+    private int hotbarSelection = 0;
     private int maxHunger = 20;
     private int currentHunger = 10;
     private double digestion = 0;
     private double passiveHealing = 0;
+
+    private boolean didDropItem = false;
 
     public Player(GamePanel gp, int worldX, int worldY) {
         super(gp, worldX, worldY);
@@ -37,9 +40,10 @@ public class Player extends Entity {
         for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
             hotbar[i] = new InventorySlot(null, 0);
         }
-        hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
-        hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
-        hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
+        
+        for(int i = 0; i < 64; i++) {
+            hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));
+        }
     }
 
     public int getMaxHealth() {
@@ -120,6 +124,14 @@ public class Player extends Entity {
         }
     }
 
+    public boolean didDropItem() {
+        return didDropItem;
+    }
+
+    public void setDidDropItem(boolean didDropItem) {
+        this.didDropItem = didDropItem;
+    }
+
     @Override
     public int getScreenX() {
         return (GameEngine.VIRTUAL_SCREEN_WIDTH / 2) - (gp.tileSize / 2);
@@ -175,6 +187,17 @@ public class Player extends Entity {
         }
     }
 
+    public void dropItem() {
+        Item heldItem = getHeldItem();
+
+        if(heldItem != null) {
+            InventorySlot item = new InventorySlot(heldItem, 1);
+            new DroppedItem(gp, getCenterX(), getCenterY(), 3, direction, item);
+            hotbar[hotbarSelection].remove();
+            didDropItem = true;
+        }
+    }
+
     private void checkPassiveHealing() {
         // Accumulate passive healing if alive, not at full health, and more than 9 hunger
         if((currentHealth > 0) && (currentHealth < maxHealth) && (currentHunger >= maxHunger - 2)) {
@@ -210,7 +233,7 @@ public class Player extends Entity {
         if(eatCounter % FOOD_PARTICLE_FREQUENCY == 0) {
             int particleWorldX = worldX + (getItemX() - getScreenX());
             int particleWorldY = worldY + (getItemY() - getScreenY());
-            
+
             new Particle(gp, particleWorldX, particleWorldY, icon);
         }
 
