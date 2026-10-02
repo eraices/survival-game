@@ -19,6 +19,10 @@ public class InventorySlot {
         return count;
     }
 
+    public boolean hasSpaceFor(int count) {
+        return this.count + count <= item.getMaxStackSize();
+    }
+
     public void add(Item item) {
         // Only add item if slot is empty, or if slot already has this item
         // and there's enough space for more
@@ -43,5 +47,9 @@ public class InventorySlot {
 
     public boolean isEmpty() {
         return item == null;
+    }
+
+    public void incCount(int count) {
+        this.count += count;
     }
 }

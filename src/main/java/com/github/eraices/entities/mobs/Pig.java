@@ -12,6 +12,7 @@ public class Pig extends PassiveMob {
         super(gp, worldX, worldY);
         speed = PIG_SPEED;
         setSpriteSheet("/sprites/Pig", WIDTH, HEIGHT, 4, 4);
+        initHurtbox(WIDTH, HEIGHT);
     }
     
     @Override

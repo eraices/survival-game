@@ -45,4 +45,8 @@ public class CollisionChecker {
 
         return false; // No collisions
     }
+
+    public void checkEntityCollision(Entity e1, Entity e2) {
+        
+    }
 }

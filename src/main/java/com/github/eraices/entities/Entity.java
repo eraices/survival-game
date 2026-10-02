@@ -1,5 +1,6 @@
 package com.github.eraices.entities;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -24,6 +25,7 @@ public class Entity {
     protected BufferedImage sprite;
     protected Rectangle hurtbox;
     protected Chunk currentChunk;
+    protected InventorySlot[] hotbar;
     protected int spriteNum;
     protected int spriteCounter = 0;
     protected int frameLength;
@@ -40,6 +42,8 @@ public class Entity {
     protected int currentHealth;
     protected boolean isInvincible = false;
     protected int iFrameCounter = 0;
+    protected int indexInMasterEntityList = 0;
+    protected boolean isRemoved = false;
 
     public Entity(GamePanel gp, int worldX, int worldY) {
         this.gp = gp;
@@ -213,13 +217,17 @@ public class Entity {
         setSprite();
      }
 
+     public void setIndexInMasterEntityList(int index) {
+        indexInMasterEntityList = index;
+     }
+
     public void update() {
-        // TODO: Implement this
         checkInvincibility();
     }
 
     public void draw(Graphics2D g2) {
         g2.drawImage(sprite, getScreenX(), getScreenY(), null);
+        g2.setColor(Color.RED);
     }
 
 	public void changeFrame() {
@@ -231,6 +239,51 @@ public class Entity {
 		
 		setSprite();
 	}
+
+    public void checkBlockCollision(int newWorldX, int newWorldY) {
+        // Check horizontal and vertical collision separately,
+        // since we can move diagonally
+        setHurtboxLocation(newWorldX, worldY);
+        if(!gp.cChecker.checkBlockCollision(this)) {
+            worldX = newWorldX;
+        } else {
+            worldX = nudgeHorizontally(newWorldX, worldX);
+        }
+
+        setHurtboxLocation(worldX, newWorldY);
+        if(!gp.cChecker.checkBlockCollision(this)) {
+            worldY = newWorldY;
+        } else {
+            worldY = nudgeVertically(newWorldY, worldY);
+        }
+    }
+
+    public void checkEntityCollision() {
+        Entity other;
+
+        // Loop through each loaded entity starting from this entity's position
+        for(int i = indexInMasterEntityList + 1; i < gp.world.masterEntityList.size(); i++) {
+            other = gp.world.masterEntityList.get(i);
+
+            if(this == other) continue;
+
+            // Ignore:
+            // 1. Particles
+            // 2. Entities that will be removed next frame
+            // 3. Entities that aren't touching this
+            if((other instanceof Particle)
+                || (other.isRemoved)
+                || (!this.hurtbox.intersects(other.hurtbox))) {
+                    continue;
+                }
+
+            if(other instanceof DroppedItem) {
+                collideWithDroppedItem((DroppedItem)other);
+            } else if(other instanceof Player) {
+                collideWithPlayer((Player)other);
+            }
+        }
+    }
 
     public void checkInvincibility() {
         if(isInvincible) {
@@ -280,22 +333,7 @@ public class Entity {
             }
         }
 
-        // Check horizontal and vertical collision separately,
-        // since we can move diagonally
-        setHurtboxLocation(newWorldX, worldY);
-        if(!gp.cChecker.checkBlockCollision(this)) {
-            worldX = newWorldX;
-        } else {
-            worldX = nudgeHorizontally(newWorldX, worldX);
-        }
-
-        setHurtboxLocation(worldX, newWorldY);
-        if(!gp.cChecker.checkBlockCollision(this)) {
-            worldY = newWorldY;
-        } else {
-            worldY = nudgeVertically(newWorldY, worldY);
-        }
-
+        checkBlockCollision(newWorldX, newWorldY);
         updateCurrentChunk();
         setHurtboxLocationToSelf();
         checkSprite();
@@ -355,6 +393,11 @@ public class Entity {
         currentHealth = Math.min(currentHealth + amount, maxHealth);
     }
 
+    public void remove() {
+        isRemoved = true;
+        currentChunk.removeEntity(this);
+    }
+
     public void takeDamage(int amount) {
         // Only take damage if not in invincibility
         if(!isInvincible) {
@@ -366,5 +409,13 @@ public class Entity {
         } else {
             isInvincible = true;
         }
+    }
+
+    protected void collideWithDroppedItem(DroppedItem droppedItem) {
+        // Implemented in child classes
+    }
+
+    protected void collideWithPlayer(Player player) {
+        // Implemented in child classes
     }
 }

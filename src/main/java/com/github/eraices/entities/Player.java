@@ -150,7 +150,9 @@ public class Player extends Entity {
         if(isEating) {
             eat();
         }
+        checkEntityCollision();
         checkPassiveHealing();
+        checkInvincibility();
     }
 
     @Override
@@ -178,12 +180,46 @@ public class Player extends Entity {
             if(isFacingUp()) {
                 g2.drawImage(item, itemX, itemY, null);
                 g2.drawImage(sprite, screenX, screenY, null);
+                g2.drawRect(hurtbox.x, hurtbox.y, hurtbox.width, hurtbox.height);
             } else {
                 g2.drawImage(sprite, screenX, screenY, null);
                 g2.drawImage(item, itemX, itemY, null);
+                g2.drawRect(hurtbox.x, hurtbox.y, hurtbox.width, hurtbox.height);
             }
         } else { // No item, so just draw player
             g2.drawImage(sprite, screenX, screenY, null);
+            g2.drawRect(hurtbox.x, hurtbox.y, hurtbox.width, hurtbox.height);
+        }
+    }
+
+    public void collidePlayerAndDroppedItem(DroppedItem droppedItem) {
+        // Only try to pick up the item if it's not invincible
+        if(!droppedItem.isInvincible) {
+            // Try to find a hotbar slot that can hold the item
+            for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
+                // Skip slots that have a different item or are at a full stack
+                if((hotbar[i].getItem() != null) && 
+                    ((!hotbar[i].getItem().equals(droppedItem.getItem()))
+                    || (hotbar[i].getCount() == hotbar[i].getItem().getMaxStackSize()))) {
+                    continue;
+                }
+
+                /*
+                Found a valid slot, check if it can hold the total amount
+                 */
+                // This slot is empty, so it's fine
+                if(hotbar[i].getItem() == null) {
+                    hotbar[i] = new InventorySlot(droppedItem.getItem(), droppedItem.getCount());
+                    droppedItem.remove();
+                    return;
+                } 
+                // This slot isn't empty, but can hold the total amount
+                else if(hotbar[i].hasSpaceFor(droppedItem.getCount())) {
+                    hotbar[i].incCount(droppedItem.getCount());
+                    droppedItem.remove();
+                    return;
+                }
+            }
         }
     }
 
@@ -196,6 +232,11 @@ public class Player extends Entity {
             hotbar[hotbarSelection].remove();
             didDropItem = true;
         }
+    }
+
+    @Override
+    protected void collideWithDroppedItem(DroppedItem droppedItem) {
+        collidePlayerAndDroppedItem(droppedItem);
     }
 
     private void checkPassiveHealing() {

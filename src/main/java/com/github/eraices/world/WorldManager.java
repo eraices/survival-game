@@ -20,9 +20,10 @@ public class WorldManager {
     // Number of pixels in a chunk
     private final int chunkPixelSize;
 
+    public ArrayList<Entity> masterEntityList = new ArrayList<>(); // Holds all loaded chunks' entities
+    
     private Map<String, Chunk> generatedChunks = new HashMap<>();   // Holds already-generated chunks
     private ArrayList<Chunk> loadedChunks = new ArrayList<>();      // Holds currently-loaded chunks
-    private ArrayList<Entity> masterEntityList = new ArrayList<>(); // Holds all loaded chunks' entities
     private GamePanel gp;
     private BufferedImage[] blockTextures = new BufferedImage[BlockID.NUM_BLOCKS];
     private long seed = 1654861354861351L;
@@ -66,6 +67,9 @@ public class WorldManager {
 
         Chunk chunk;
 
+        // This will be used when we add entities into the master list
+        int index = 0;
+
         // Get all loaded chunks and entities
         for(int currChunkX = startChunkX; currChunkX <= endChunkX; currChunkX++) {
             for(int currChunkY = startChunkY; currChunkY <= endChunkY; currChunkY++) {
@@ -77,6 +81,8 @@ public class WorldManager {
                 // Add all entities in this chunk to master list
                 for(Entity e: chunk.entityList) {
                     masterEntityList.add(e);
+                    e.setIndexInMasterEntityList(index);
+                    index++;
                 }
             }
         }
@@ -242,5 +248,10 @@ public class WorldManager {
         for(int blockID = 1; blockID < blockTextures.length; blockID++) {
             blockTextures[blockID] = tileset[blockID - 1]; // - 1 because no air texture
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Entities: " + masterEntityList.size();
     }
 }
