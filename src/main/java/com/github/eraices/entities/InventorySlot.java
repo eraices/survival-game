@@ -19,6 +19,14 @@ public class InventorySlot {
         return count;
     }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean isFull() {
+        return count == item.getMaxStackSize();
+    }
+
     public boolean hasSpaceFor(int count) {
         return this.count + count <= item.getMaxStackSize();
     }
@@ -47,9 +55,5 @@ public class InventorySlot {
 
     public boolean isEmpty() {
         return item == null;
-    }
-
-    public void incCount(int count) {
-        this.count += count;
     }
 }

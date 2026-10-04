@@ -43,7 +43,7 @@ public class Entity {
     protected boolean isInvincible = false;
     protected int iFrameCounter = 0;
     protected int indexInMasterEntityList = 0;
-    protected boolean isRemoved = false;
+    public boolean isRemoved = false;
 
     public Entity(GamePanel gp, int worldX, int worldY) {
         this.gp = gp;
@@ -221,7 +221,13 @@ public class Entity {
         indexInMasterEntityList = index;
      }
 
+     public boolean isRemoved() {
+        return isRemoved;
+     }
+
     public void update() {
+        if(isRemoved) return;
+
         checkInvincibility();
     }
 
@@ -259,13 +265,17 @@ public class Entity {
     }
 
     public void checkEntityCollision() {
+        // If this entity is getting removed next frame, it can't interact with anything
+        if(isRemoved) return;
+
         Entity other;
 
         // Loop through each loaded entity starting from this entity's position
         for(int i = indexInMasterEntityList + 1; i < gp.world.masterEntityList.size(); i++) {
-            other = gp.world.masterEntityList.get(i);
+            // Safeguard against this entity still checking collision while removed
+            if(isRemoved) return;
 
-            if(this == other) continue;
+            other = gp.world.masterEntityList.get(i);
 
             // Ignore:
             // 1. Particles

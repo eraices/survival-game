@@ -42,8 +42,14 @@ public class DroppedItem extends Entity {
         return item.getCount();
     }
 
+    public void setCount(int count) {
+        item.setCount(count);
+    }
+
     @Override
     public void update() {
+        if(isRemoved) return;
+
         if((speedX != 0) || (speedY != 0)) {
             move();
 
@@ -71,7 +77,27 @@ public class DroppedItem extends Entity {
 
     @Override
     protected void collideWithDroppedItem(DroppedItem droppedItem) {
-        
+        // Do nothing if:
+        // 1. These are different items
+        // 2. This item is a full stack
+        // 3. The other item is a full stack
+        if((!this.getItem().equals(droppedItem.getItem()))
+            || (this.item.isFull())
+            || (droppedItem.item.isFull())) {
+                return;
+            }
+
+        // Both stacks aren't full; coalesce them
+        int totalCount = this.getCount() + droppedItem.getCount();
+        if(totalCount <= getItem().getMaxStackSize()) {             // Coalesce into a single stack
+            this.setCount(totalCount);
+            droppedItem.remove();
+        } else {                                                    // Use one stack to make the other full
+            int amountForMaxStack = this.getItem().getMaxStackSize() - this.getCount();
+
+            this.setCount(this.getCount() + amountForMaxStack);
+            droppedItem.setCount(droppedItem.getCount() - amountForMaxStack);
+        }
     } 
 
     @Override

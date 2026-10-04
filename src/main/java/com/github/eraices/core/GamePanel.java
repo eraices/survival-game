@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import com.github.eraices.core.GameStateManager.State;
 import com.github.eraices.entities.*;
 import com.github.eraices.entities.mobs.*;
+import com.github.eraices.items.Item;
 import com.github.eraices.ui.UI;
 import com.github.eraices.world.WorldManager;
 
@@ -31,7 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
 	public Player player = new Player(this, 0, 0);
-	public Entity pig = new Pig(this, tileSize, tileSize);
+	public Entity pig = new Pig(this, 0, 0);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public IconManager iManager = new IconManager(this);
 

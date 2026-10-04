@@ -144,6 +144,8 @@ public class Player extends Entity {
 
     @Override
     public void update() {
+        if(isRemoved) return;
+        
         if(isMoving) {
             move();
         }
@@ -200,7 +202,7 @@ public class Player extends Entity {
                 // Skip slots that have a different item or are at a full stack
                 if((hotbar[i].getItem() != null) && 
                     ((!hotbar[i].getItem().equals(droppedItem.getItem()))
-                    || (hotbar[i].getCount() == hotbar[i].getItem().getMaxStackSize()))) {
+                    || (hotbar[i].isFull()))) {
                     continue;
                 }
 
@@ -215,9 +217,15 @@ public class Player extends Entity {
                 } 
                 // This slot isn't empty, but can hold the total amount
                 else if(hotbar[i].hasSpaceFor(droppedItem.getCount())) {
-                    hotbar[i].incCount(droppedItem.getCount());
+                    int totalCount = hotbar[i].getCount() + droppedItem.getCount();
+                    hotbar[i].setCount(totalCount);
                     droppedItem.remove();
                     return;
+                }
+                // This slot isn't empty, but can only hold some of the amount
+                else {
+                    // Not implemented, for now, just complain
+                    System.out.println("What the heck");
                 }
             }
         }
@@ -285,5 +293,15 @@ public class Player extends Entity {
 
             setIsEating(false);
         }
+    }
+
+    public int getTotalItemCount() {
+        int sum = 0;
+        for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
+            if(hotbar[i] != null) {
+                sum += hotbar[i].getCount();
+            }
+        }
+        return sum;
     }
 }

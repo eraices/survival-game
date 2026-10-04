@@ -11,7 +11,9 @@ import java.util.Random;
 import com.github.eraices.core.AssetHandler;
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
+import com.github.eraices.entities.DroppedItem;
 import com.github.eraices.entities.Entity;
+import com.github.eraices.items.Item;
 
 public class WorldManager {
     public static final long LARGE_PRIME_A = 479001599L;
@@ -254,4 +256,31 @@ public class WorldManager {
     public String toString() {
         return "Entities: " + masterEntityList.size();
     }
+    // Inside your main GamePanel/World update loop, AFTER Pass 3 (removals) finishes:
+    public void verifyItemConservation() {
+    System.out.println("=== GROUND ITEM AUDIT ===");
+    int groundCount = 0;
+    int activeEntityCount = 0;
+
+    for (int i = 0; i < masterEntityList.size(); i++) {
+        Entity e = masterEntityList.get(i);
+        if (e instanceof DroppedItem item) {
+            activeEntityCount++;
+            groundCount += item.getCount();
+            
+            System.out.println("  [" + i + "] DroppedItem @ (" + item.getWorldX() + ", " + item.getWorldY() 
+                + ") | Count: " + item.getCount() 
+                + " | Item Obj Hash: " + System.identityHashCode(item.getItem())
+                + " | isRemoved: " + item.isRemoved);
+        }
+    }
+
+    int inventoryCount = gp.player.getTotalItemCount();
+    System.out.println("TOTALS -> Ground: " + groundCount + " | Inv: " + inventoryCount 
+        + " | Combined: " + (groundCount + inventoryCount) 
+        + " | Total Active Item Entities: " + activeEntityCount);
+    System.out.println("Entities in master list: " + (masterEntityList.size() - 1));
+    System.out.println("=========================");
+
+}
 }

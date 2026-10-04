@@ -47,14 +47,17 @@ public class Chunk {
 	}
 
 	public void refreshEntityList() {
+        if(!entityAddList.isEmpty()) {				// Add entities tht need to be added
+            entityList.addAll(entityAddList);
+            entityAddList.clear();
+        }
 		if(!entityRemoveList.isEmpty()) {			// Remove entities that need to be removed
 			entityList.removeAll(entityRemoveList);
-			entityRemoveList.clear();
+            entityRemoveList.clear();
 		}
-		if(!entityAddList.isEmpty()) {				// Add entities tht need to be added
-			entityList.addAll(entityAddList);
-			entityAddList.clear();
-		}
+
+        // Make sure no entities were added erroneously
+        entityList.removeIf(Entity::isRemoved);
 	}
 
     @Override
