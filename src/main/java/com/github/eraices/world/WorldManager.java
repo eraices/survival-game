@@ -20,7 +20,7 @@ public class WorldManager {
     public static final long LARGE_PRIME_B = 87178291199L;
 
     // Number of pixels in a chunk
-    private final int chunkPixelSize;
+    public final int chunkPixelSize;
 
     public ArrayList<Entity> masterEntityList = new ArrayList<>(); // Holds all loaded chunks' entities
     
@@ -69,9 +69,6 @@ public class WorldManager {
 
         Chunk chunk;
 
-        // This will be used when we add entities into the master list
-        int index = 0;
-
         // Get all loaded chunks and entities
         for(int currChunkX = startChunkX; currChunkX <= endChunkX; currChunkX++) {
             for(int currChunkY = startChunkY; currChunkY <= endChunkY; currChunkY++) {
@@ -83,8 +80,6 @@ public class WorldManager {
                 // Add all entities in this chunk to master list
                 for(Entity e: chunk.entityList) {
                     masterEntityList.add(e);
-                    e.setIndexInMasterEntityList(index);
-                    index++;
                 }
             }
         }

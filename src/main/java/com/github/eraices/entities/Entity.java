@@ -42,7 +42,6 @@ public class Entity {
     protected int currentHealth;
     protected boolean isInvincible = false;
     protected int iFrameCounter = 0;
-    protected int indexInMasterEntityList = 0;
     public boolean isRemoved = false;
 
     public Entity(GamePanel gp, int worldX, int worldY) {
@@ -217,10 +216,6 @@ public class Entity {
         setSprite();
      }
 
-     public void setIndexInMasterEntityList(int index) {
-        indexInMasterEntityList = index;
-     }
-
      public boolean isRemoved() {
         return isRemoved;
      }
@@ -265,32 +260,38 @@ public class Entity {
     }
 
     public void checkEntityCollision() {
-        // If this entity is getting removed next frame, it can't interact with anything
-        if(isRemoved) return;
+        int thisChunkX = currentChunk.chunkX;
+        int thisChunkY = currentChunk.chunkY;
 
-        Entity other;
+        // Check collisions with entities in only the 3x3 chunk area around this entity
+        for(int currChunkX = -1; currChunkX <= 1; currChunkX++) {
+            for(int currChunkY = -1; currChunkY <= 1; currChunkY++) {
+                Chunk currChunk = gp.world.getChunk(thisChunkX + currChunkX, thisChunkY + currChunkY);
 
-        // Loop through each loaded entity starting from this entity's position
-        for(int i = indexInMasterEntityList + 1; i < gp.world.masterEntityList.size(); i++) {
-            // Safeguard against this entity still checking collision while removed
-            if(isRemoved) return;
+                for(Entity other: currChunk.entityList) {
+                    // If this entity is getting removed next frame, it can't interact with anything.
+                    // Immediately stop checking to avoid problems
+                    if(this.isRemoved) return;
 
-            other = gp.world.masterEntityList.get(i);
+                    // Skip if:
+                    // 1. other is being removed next frame
+                    // 2. other and this are the same entity
+                    // 3. other is a particle
+                    // 4. other and this were already checked
+                    // 5. other and this aren't touching
+                    if(other.isRemoved) continue;
+                    if(other == this) continue;
+                    if(other instanceof Particle) continue;
+                    if(System.identityHashCode(this) >= System.identityHashCode(other)) continue;
+                    if(!this.hurtbox.intersects(other.hurtbox)) continue;
 
-            // Ignore:
-            // 1. Particles
-            // 2. Entities that will be removed next frame
-            // 3. Entities that aren't touching this
-            if((other instanceof Particle)
-                || (other.isRemoved)
-                || (!this.hurtbox.intersects(other.hurtbox))) {
-                    continue;
+                    // Valid collision! Handle it
+                    if(other instanceof DroppedItem) {
+                        collideWithDroppedItem((DroppedItem)other);
+                    } else if(other instanceof Player) {
+                        collideWithPlayer((Player)other);
+                    }
                 }
-
-            if(other instanceof DroppedItem) {
-                collideWithDroppedItem((DroppedItem)other);
-            } else if(other instanceof Player) {
-                collideWithPlayer((Player)other);
             }
         }
     }

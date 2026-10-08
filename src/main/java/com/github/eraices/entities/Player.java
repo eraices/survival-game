@@ -145,7 +145,7 @@ public class Player extends Entity {
     @Override
     public void update() {
         if(isRemoved) return;
-        
+
         if(isMoving) {
             move();
         }
@@ -182,15 +182,12 @@ public class Player extends Entity {
             if(isFacingUp()) {
                 g2.drawImage(item, itemX, itemY, null);
                 g2.drawImage(sprite, screenX, screenY, null);
-                g2.drawRect(hurtbox.x, hurtbox.y, hurtbox.width, hurtbox.height);
             } else {
                 g2.drawImage(sprite, screenX, screenY, null);
                 g2.drawImage(item, itemX, itemY, null);
-                g2.drawRect(hurtbox.x, hurtbox.y, hurtbox.width, hurtbox.height);
             }
         } else { // No item, so just draw player
             g2.drawImage(sprite, screenX, screenY, null);
-            g2.drawRect(hurtbox.x, hurtbox.y, hurtbox.width, hurtbox.height);
         }
     }
 
