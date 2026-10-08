@@ -3,20 +3,23 @@ package com.github.eraices.entities;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import javax.swing.SpinnerDateModel;
+
 import com.github.eraices.core.GameEngine;
 import com.github.eraices.core.GamePanel;
 import com.github.eraices.core.Icon;
-import com.github.eraices.core.RNG;
 import com.github.eraices.items.*;
 
 public class Player extends Entity {
+    private static final int MAX_HEALTH = 20;
+    private static final int WIDTH = 16;
+    private static final int HEIGHT = 16;
+    private static final int SPEED = 2;
     private static final int NUM_HOTBAR_SLOTS = 9;
-    private static final int PLAYER_SPEED = 2;
     private static final int FOOD_PARTICLE_FREQUENCY = 5;
     private static final double DIGESTION_THRESHOLD = 10;
     private static final double PASSIVE_HEALING_THRESHOLD = 10;
 
-    private InventorySlot[] hotbar = new InventorySlot[NUM_HOTBAR_SLOTS];
     private int hotbarSelection = 0;
     private int maxHunger = 20;
     private int currentHunger = 10;
@@ -27,19 +30,8 @@ public class Player extends Entity {
 
     public Player(GamePanel gp, int worldX, int worldY) {
         super(gp, worldX, worldY);
-        speed = PLAYER_SPEED;
-        width = gp.tileSize;
-        height = gp.tileSize;
-        initHurtbox(width, height);
-        setHurtboxLocationToSelf();
-        frameLength = 6;
-        maxHealth = 20;
-        currentHealth = 1;
-        setSpriteSheet("/sprites/Player", gp.ogTileSize, gp.ogTileSize, 4, 4);
-
-        for(int i = 0; i < NUM_HOTBAR_SLOTS; i++) {
-            hotbar[i] = new InventorySlot(null, 0);
-        }
+        initSelf(MAX_HEALTH, WIDTH, HEIGHT, SPEED, NUM_HOTBAR_SLOTS);
+        setSpriteSheet("/sprites/Player", WIDTH, HEIGHT, 4, 4);
         
         for(int i = 0; i < 64; i++) {
             hotbar[4].add(new Consumable("Bread", Icon.BREAD, 64, 6));

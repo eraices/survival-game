@@ -28,7 +28,7 @@ public class Entity {
     protected InventorySlot[] hotbar;
     protected int spriteNum;
     protected int spriteCounter = 0;
-    protected int frameLength;
+    protected int frameLength = 6;
     protected int worldX;
     protected int worldY;
     protected double speed;
@@ -50,6 +50,23 @@ public class Entity {
         this.worldY = worldY;
         updateCurrentChunk();
         currentChunk.addEntity(this);
+    }
+
+    public void initSelf(int maxHealth, int width, int height, int speed, int numHotBarSlots) {
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth;
+        this.width = width * gp.scale;
+        this.height = height * gp.scale;
+        this.speed = speed;
+
+        if(numHotBarSlots > 0) {
+            this.hotbar = new InventorySlot[numHotBarSlots];
+            for(int i = 0; i < numHotBarSlots; i++) {
+                this.hotbar[i] = new InventorySlot(null, 0);
+            }
+        }
+
+        initHurtbox(this.width, this.height);
     }
 
     public int getWorldX() {
@@ -105,6 +122,8 @@ public class Entity {
         int hurtboxHeight = entityHeight - (gp.scale * 2);
 
         hurtbox = new Rectangle(hurtboxWidth, hurtboxHeight);
+
+        setHurtboxLocationToSelf();
     }
 
     public Rectangle getHurtBox() {
